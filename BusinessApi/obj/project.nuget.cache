@@ -1,0 +1,15 @@
+{
+  "version": 2,
+  "dgSpecHash": "MVq0o8VxC+Ac9NXIGg0S7FwTQ84ovPIb8STTk8SpynDGyVK2JkBYZOc6Pf/vaoDG5HVKUrYPBOfT0Cnz8lpx/g==",
+  "success": true,
+  "projectFilePath": "D:\\Applications\\SPM\\SPM_React\\SPMBusinessApi\\BusinessApi\\BusinessApi.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\POI\\.nuget\\packages\\microsoft.extensions.apidescription.server\\3.0.0\\microsoft.extensions.apidescription.server.3.0.0.nupkg.sha512",
+    "C:\\Users\\POI\\.nuget\\packages\\microsoft.openapi\\1.2.3\\microsoft.openapi.1.2.3.nupkg.sha512",
+    "C:\\Users\\POI\\.nuget\\packages\\swashbuckle.aspnetcore\\6.2.3\\swashbuckle.aspnetcore.6.2.3.nupkg.sha512",
+    "C:\\Users\\POI\\.nuget\\packages\\swashbuckle.aspnetcore.swagger\\6.2.3\\swashbuckle.aspnetcore.swagger.6.2.3.nupkg.sha512",
+    "C:\\Users\\POI\\.nuget\\packages\\swashbuckle.aspnetcore.swaggergen\\6.2.3\\swashbuckle.aspnetcore.swaggergen.6.2.3.nupkg.sha512",
+    "C:\\Users\\POI\\.nuget\\packages\\swashbuckle.aspnetcore.swaggerui\\6.2.3\\swashbuckle.aspnetcore.swaggerui.6.2.3.nupkg.sha512"
+  ],
+  "logs": []
+}
