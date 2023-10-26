@@ -4,6 +4,6 @@ namespace BusinessApi.Repositories.Interface
 {
     public interface IDashBoardRegisterRepository
     {
-        DashBoardRegisterModel GetProject(DashBoardRegisterModel parameters);
+        Task<DashBoardRegisterModel> GetProject();
     }
 }

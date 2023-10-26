@@ -9,19 +9,18 @@ namespace BusinessApi.Controllers
     [Route("[controller]")]
     public class DashBoardRegisterController : ControllerBase
     {
-        private IDashBoardRegisterRepository _dashBoardRegisterRepository;
-        public DashBoardRegisterController(IDashBoardRegisterRepository dashBoardRegisterRepository)
+        private readonly IDashBoardRegisterRepository _repository;
+        public DashBoardRegisterController(IDashBoardRegisterRepository repository)
         {
-            _dashBoardRegisterRepository = dashBoardRegisterRepository;
-
+            _repository = repository;
         }
         [HttpGet]
-        public ActionResult GetDashBoardRegisterList([FromBody] DashBoardRegisterModel parameter)
+        public async Task<ActionResult<DashBoardRegisterModel>> GetDashBoardRegister()
         {
             ApiResponse response;
             try
             {
-                DashBoardRegisterModel dataList = _dashBoardRegisterRepository.GetProject(parameter);
+                var dataList = await _repository.GetProject();
                 response = new ApiResponse
                 {
                     success = true,

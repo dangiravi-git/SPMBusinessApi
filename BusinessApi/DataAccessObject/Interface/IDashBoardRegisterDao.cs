@@ -2,8 +2,8 @@
 
 namespace BusinessApi.DataAccessObject.Interface
 {
-    public interface IDashBoardRegisterDao<T, in PK>
+    public interface IDashBoardRegisterDao
     {
-        DashBoardRegisterModel getProjects(DashBoardRegisterModel parameters);
+        Task<DashBoardRegisterModel> GetProjects();
     }
 }
