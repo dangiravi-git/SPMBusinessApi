@@ -1,0 +1,6 @@
+C:\Users\UPPWISE\Documents\GitHub\SPMBusinessApi\BusinessApi\obj\Release\net6.0\BusinessApi.csproj.AssemblyReference.cache
+C:\Users\UPPWISE\Documents\GitHub\SPMBusinessApi\BusinessApi\obj\Release\net6.0\BusinessApi.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\UPPWISE\Documents\GitHub\SPMBusinessApi\BusinessApi\obj\Release\net6.0\BusinessApi.AssemblyInfoInputs.cache
+C:\Users\UPPWISE\Documents\GitHub\SPMBusinessApi\BusinessApi\obj\Release\net6.0\BusinessApi.AssemblyInfo.cs
+C:\Users\UPPWISE\Documents\GitHub\SPMBusinessApi\BusinessApi\obj\Release\net6.0\BusinessApi.csproj.CoreCompileInputs.cache
+C:\Users\UPPWISE\Documents\GitHub\SPMBusinessApi\BusinessApi\obj\Release\net6.0\BusinessApi.MvcApplicationPartsAssemblyInfo.cache
