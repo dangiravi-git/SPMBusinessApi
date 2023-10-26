@@ -1,10 +1,13 @@
-﻿using BusinessApi.Repositories.Interface;
+﻿using BusinessApi.Models;
+using BusinessApi.Repositories.Interface;
 using BusinessApi.Utils.Response;
-using System.Web.Http;
+using Microsoft.AspNetCore.Mvc;
 
 namespace BusinessApi.Controllers
 {
-    public class DashBoardRegisterController : ApiController
+    [ApiController]
+    [Route("[controller]")]
+    public class DashBoardRegisterController : ControllerBase
     {
         private IDashBoardRegisterRepository _dashBoardRegisterRepository;
         public DashBoardRegisterController(IDashBoardRegisterRepository dashBoardRegisterRepository)
@@ -12,16 +15,29 @@ namespace BusinessApi.Controllers
             _dashBoardRegisterRepository = dashBoardRegisterRepository;
 
         }
-        [System.Web.Http.HttpPost]
-        public IHttpActionResult GetDashBoardRegisterList()
+        [HttpGet]
+        public ActionResult GetDashBoardRegisterList([FromBody] DashBoardRegisterModel parameter)
         {
             ApiResponse response;
-            response = new ApiResponse
+            try
             {
-                success = true,
-                message = "",
-                data = ""
-            };
+                DashBoardRegisterModel dataList = _dashBoardRegisterRepository.GetProject(parameter);
+                response = new ApiResponse
+                {
+                    success = true,
+                    message = "",
+                    data = dataList
+                };
+            }
+            catch
+            {
+                response = new ApiResponse
+                {
+                    success = false,
+                    message = "",
+                    data = new DashBoardRegisterModel()
+                };
+            }
             return Ok(response);
         }
     }
