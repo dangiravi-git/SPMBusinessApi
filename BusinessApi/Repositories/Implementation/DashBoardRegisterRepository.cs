@@ -38,20 +38,29 @@ namespace BusinessApi.Repositories.Implementation
         }
         public async Task<DashboardDto> CreateNewDashboard(DashboardDto dashboard)
         {
-            bool isCodeExists = await _projectListDao.IsDashboardCodeAlreadyExists(dashboard.Code);
-            if (isCodeExists)
+            int newDbId = 0;
+            var isCodeExists = await _projectListDao.IsDashboardCodeAlreadyExists(dashboard.Code);
+            if (isCodeExists != null && isCodeExists.Rows.Count>0 && Convert.ToBoolean(isCodeExists.Rows[0][0]))
             {
-                int dashboardId = await _projectListDao.CreateNewDashboard(dashboard.Code, dashboard.Code, dashboard.Description);
-                if (dashboardId != 0)
+                int created = await _projectListDao.CreateNewDashboard(dashboard.Code, dashboard.DashboardType, dashboard.Description,dashboard.CreatedBy,dashboard.IsWf);
+                if (created != 0)
                 {
-                    foreach (var item in dashboard.DashboardLayoutAssoList)
+                    var newDashboardId = await _projectListDao.IsDashboardCodeAlreadyExists(dashboard.Code);
+                    if(newDashboardId != null && newDashboardId.Rows.Count>0)
                     {
-                        await _projectListDao.CreateLayoutAssociationWithDashboard(dashboardId, item.LayoutId, item.LayoutSeq);
+                        int.TryParse( newDashboardId.Rows[0][0].ToString(),out newDbId);
+                        if(newDbId != 0)
+                        {
+                            foreach (var item in dashboard.DashboardLayoutAssoList)
+                            {
+                                await _projectListDao.CreateLayoutAssociationWithDashboard(newDbId, item.LayoutId, item.LayoutSeq);
+                            }
+                        }
                     }
+                   
                 }
-                dashboard.DashboardId = dashboardId;
+                dashboard.DashboardId = newDbId;
             }
-          
             return dashboard;
         }
     }

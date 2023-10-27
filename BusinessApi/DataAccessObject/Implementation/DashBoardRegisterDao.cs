@@ -20,20 +20,27 @@ namespace BusinessApi.DataAccessObject.Implementation
             var dashbords = await _dbUtility.ExecuteQuery(sqlSelect);
             return dashbords;
         }
-        public async Task<int> CreateNewDashboard(string? code1, string? code2, string? description)
+        public async Task<int> CreateNewDashboard(string? code, string? type, string? description, double createdBy, string isWf)
         {
-            StringBuilder sql = new StringBuilder();
+            StringBuilder sql = new();
             sql.Append("INSERT INTO TAB_PUBLISH_DASHBOARDS ( [DB_ID],[DB_CODE] ,[DB_DESCRIPTION] ,[CreatedBy] ,[DB_CREATION_DATE] ,[DB_TYPE] , [IS_WF])");
-            sql.Append(" Values((select (ISNULL(MAX(DB_ID),0) + 1) as id from TAB_PUBLISH_DASHBOARDS ),)");
-
+            sql.Append(" Values((select (ISNULL(MAX(DB_ID),0) + 1) as id from TAB_PUBLISH_DASHBOARDS),'"+ code + "','"+ description  +"','"+ createdBy + "',getdate(),'"+ type +"','"+ isWf + "')");
+            int records = await _dbUtility.QueryExec(sql.ToString());
+            return records;
         }
-        public Task CreateLayoutAssociationWithDashboard(int dashboardId, int layoutId, int layoutSeq)
+        public async Task CreateLayoutAssociationWithDashboard(int dashboardId, int layoutId, int layoutSeq)
         {
-            throw new NotImplementedException();
+            StringBuilder sql = new();
+            sql.Append("INSERT INTO ASCN_PUB_LAYOUT_DASHBOARDS(DB_ID, P_LAYOUT_ID, LAYOUT_SEQ)");
+            sql.Append("Values("+dashboardId+ "," + layoutId + "," + layoutSeq + ")");
+            int records = await _dbUtility.QueryExec(sql.ToString());
         }
-        public Task<bool> IsDashboardCodeAlreadyExists(string? code)
+        public async Task<DataTable> IsDashboardCodeAlreadyExists(string code)
         {
-            throw new NotImplementedException();
+            StringBuilder sql = new();
+            sql.Append("select [DB_ID] DB_ID from TAB_PUBLISH_DASHBOARDS where DB_CODE =" + code);
+            var dt = await _dbUtility.ExecuteQuery(sql.ToString());
+            return dt;
         }
     }
 }

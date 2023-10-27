@@ -28,7 +28,18 @@ namespace BusinessApi.Utils
                 }
             }
         }
-
-
-}
+        public async Task<int> QueryExec(string sql)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
+                using (var command = new SqlCommand(sql, connection))
+                {
+                    command.CommandText = sql;
+                    command.CommandType = CommandType.Text;
+                    return command.ExecuteNonQuery(); 
+                }
+            }
+        }
+    }
 }

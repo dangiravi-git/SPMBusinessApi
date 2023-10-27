@@ -7,7 +7,6 @@
     public class DashBoardRegisterViewTypeViewModel : DashboardDto
     {
         public string? DashboardCreatedBy { get; set; }
-        public string? IsWf { get; set; }
     }
 
     public class DashboardDto : BaseDto 
@@ -16,6 +15,7 @@
         public string? Code { get; set; }
         public string? Description { get; set; }
         public string? DashboardType { get; set; }
+        public string? IsWf { get; set; }
         public List<DashboardLayoutAssoDto>? DashboardLayoutAssoList { get; set; } 
     }
     public class DashboardLayoutAssoDto
