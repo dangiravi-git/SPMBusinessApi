@@ -15,29 +15,55 @@ namespace BusinessApi.Controllers
             _repository = repository;
         }
         [HttpGet]
-        public async Task<ActionResult<DashBoardRegisterModel>> GetDashBoardRegister()
+        public async Task<ActionResult<ApiResponse<DashBoardRegisterModel>>> GetDashBoardRegister()
         {
-            ApiResponse response;
+            ApiResponse<List<DashBoardRegisterViewTypeViewModel>> response;
             try
             {
                 var dataList = await _repository.GetProject();
-                response = new ApiResponse
+                response = new ApiResponse<List<DashBoardRegisterViewTypeViewModel>>
                 {
-                    success = true,
-                    message = "",
-                    data = dataList
+                    IsSuccess = true,
+                    Message = "",
+                    Item  = dataList
                 };
             }
-            catch
+            catch(Exception ex)
             {
-                response = new ApiResponse
+                response = new ApiResponse<List<DashBoardRegisterViewTypeViewModel>>
                 {
-                    success = false,
-                    message = "",
-                    data = new DashBoardRegisterModel()
+                    IsSuccess = false,
+                    Message = ex.Message,
+                    Item = new List<DashBoardRegisterViewTypeViewModel>()
                 };
             }
             return Ok(response);
         }
+        [HttpPost]
+        public async Task<ActionResult<ApiResponse<DashboardDto>>> CreateNewDashboard([FromBody] DashboardDto dashboardDto)
+        {
+            ApiResponse<DashboardDto> response;
+            try
+            {
+                var dataList = await _repository.CreateNewDashboard(dashboardDto);
+                response = new ApiResponse<DashboardDto>
+                {
+                    IsSuccess = true,
+                    Message = "",
+                    Item = dataList
+                };
+            }
+            catch (Exception ex)
+            {
+                response = new ApiResponse<DashboardDto>
+                {
+                    IsSuccess = false,
+                    Message = ex.Message,
+                    Item = new DashboardDto()
+                };
+            }
+            return Ok(response);
+        }
+
     }
 }

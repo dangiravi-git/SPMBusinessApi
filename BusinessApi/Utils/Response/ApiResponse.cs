@@ -1,10 +1,10 @@
 ﻿namespace BusinessApi.Utils.Response
 {
-    public class ApiResponse
+    public class ApiResponse<T>
     {
-        public bool success { get; set; }
-        public ErrorType error_code { get; set; }
-        public string? message { get; set; }
-        public dynamic? data { get; set; }
+        public bool IsSuccess { get; set; }
+        public ErrorType ErrorCode { get; set; }
+        public string? Message { get; set; }
+        public T Item { get; set; }
     }
 }
