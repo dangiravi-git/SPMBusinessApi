@@ -4,14 +4,24 @@
     {
         public List<DashBoardRegisterViewTypeViewModel> DashBoardRegisterViewType { get; set; } = new List<DashBoardRegisterViewTypeViewModel>();
     }
-    public class DashBoardRegisterViewTypeViewModel
+    public class DashBoardRegisterViewTypeViewModel : DashboardDto
     {
-        public string? DB_ID { get; set; }
-        public string? DB_CODE { get; set; }
-        public string? DB_DESCRIPTION { get; set; }
-        public string? CreatedBy { get; set; }
-        public string? DB_CREATION_DATE { get; set; }
-        public string? db_type { get; set; }
-        public string? IS_WF { get; set; }
+        public string? DashboardCreatedBy { get; set; }
+    }
+
+    public class DashboardDto : BaseDto 
+    {
+        public int DashboardId { get; set; }
+        public string? Code { get; set; }
+        public string? Description { get; set; }
+        public string? DashboardType { get; set; }
+        public string? IsWf { get; set; }
+        public List<DashboardLayoutAssoDto>? DashboardLayoutAssoList { get; set; } 
+    }
+    public class DashboardLayoutAssoDto
+    {
+        public int LayoutId { get; set; }
+        public int LayoutSeq { get; set; }
+
     }
 }
