@@ -1,27 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "D:\\Applications\\SPM\\SPM_Angular\\SPMBusinessApi\\BusinessApi\\BusinessApi.csproj": {}
+    "C:\\Users\\UPPWISE\\Documents\\GitHub\\SPMBusinessApi\\BusinessApi\\BusinessApi.csproj": {}
   },
   "projects": {
-    "D:\\Applications\\SPM\\SPM_Angular\\SPMBusinessApi\\BusinessApi\\BusinessApi.csproj": {
+    "C:\\Users\\UPPWISE\\Documents\\GitHub\\SPMBusinessApi\\BusinessApi\\BusinessApi.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Applications\\SPM\\SPM_Angular\\SPMBusinessApi\\BusinessApi\\BusinessApi.csproj",
+        "projectUniqueName": "C:\\Users\\UPPWISE\\Documents\\GitHub\\SPMBusinessApi\\BusinessApi\\BusinessApi.csproj",
         "projectName": "BusinessApi",
-        "projectPath": "D:\\Applications\\SPM\\SPM_Angular\\SPMBusinessApi\\BusinessApi\\BusinessApi.csproj",
-        "packagesPath": "C:\\Users\\POI\\.nuget\\packages\\",
-        "outputPath": "D:\\Applications\\SPM\\SPM_Angular\\SPMBusinessApi\\BusinessApi\\obj\\",
+        "projectPath": "C:\\Users\\UPPWISE\\Documents\\GitHub\\SPMBusinessApi\\BusinessApi\\BusinessApi.csproj",
+        "packagesPath": "C:\\Users\\UPPWISE\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\UPPWISE\\Documents\\GitHub\\SPMBusinessApi\\BusinessApi\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files\\DevExpress 23.1\\Components\\Offline Packages",
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages",
-          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
-        ],
         "configFilePaths": [
-          "C:\\Users\\POI\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\DevExpress 23.1.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Users\\UPPWISE\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -29,9 +22,7 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\DevExpress 23.1\\Components\\System\\Components\\Packages": {},
-          "https://api.nuget.org/v3/index.json": {},
-          "https://projectobjects.pkgs.visualstudio.com/182358cf-e47f-4099-b92e-21c7f7b03997/_packaging/POPackages/nuget/v3/index.json": {}
+          "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net6.0": {
@@ -52,6 +43,10 @@
             "Microsoft.AspNet.WebApi.Core": {
               "target": "Package",
               "version": "[5.3.0, )"
+            },
+            "Microsoft.AspNetCore.Cors": {
+              "target": "Package",
+              "version": "[2.1.1, )"
             },
             "Microsoft.EntityFrameworkCore": {
               "target": "Package",
@@ -82,7 +77,8 @@
             "net47",
             "net471",
             "net472",
-            "net48"
+            "net48",
+            "net481"
           ],
           "assetTargetFallback": true,
           "warn": true,
@@ -94,7 +90,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.201\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.403\\RuntimeIdentifierGraph.json"
         }
       }
     }
