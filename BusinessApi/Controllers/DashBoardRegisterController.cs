@@ -120,5 +120,11 @@ namespace BusinessApi.Controllers
             }
             return Ok(response);
         }
+        [HttpPost("DeleteRecords")]
+        public async Task<IActionResult> DeleteRecords(string val)
+        {
+            string resultMessage = await _repository.DeleteRecords(val);
+            return Content(resultMessage);
+        }
     }
 }

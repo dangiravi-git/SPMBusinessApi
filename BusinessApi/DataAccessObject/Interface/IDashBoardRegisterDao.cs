@@ -12,5 +12,9 @@ namespace BusinessApi.DataAccessObject.Interface
         Task<DataTable> GetBindData(string dashboardId, string dashboardType);
         Task<DataTable> GetBindAvailableGroupDataWithId(string dashboardId, string dashboardType,string funzlPermission);
         Task<DataTable> GetBindAvailableGroupDataWithType(string dashboardType,string funzlPermission);
+        Task<DataRow> GetTypeVal(string item);
+        Task<object> GetGroupVal(string colName, object v);
+        Task updatethedata(string groups, string checkColName, string colName, string grpColName);
+        Task<DataTable> deletethedata(object v, string item);
     }
 }

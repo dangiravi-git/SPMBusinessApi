@@ -74,5 +74,56 @@ namespace BusinessApi.DataAccessObject.Implementation
             var result = await _dbUtility.ExecuteQuery(sql);
             return result;
         }
+        public async Task<DataRow> GetTypeVal(string item)
+        {
+            string sql = "SELECT DB_TYPE, db_id FROM TAB_PUBLISH_DASHBOARDS WHERE DB_CODE = '" + item + "'";
+            var result = await _dbUtility.ExecuteQuery(sql);
+            if (result.Rows.Count > 0)
+            {
+                return result.Rows[0];
+            }
+
+            return null; 
+        }
+        public async Task<object> GetGroupVal(string colName, object v)
+        {
+            string sql = "SELECT Stuff(list, 1, 1, '')" + Environment.NewLine;
+            sql += "FROM   (SELECT DISTINCT ',' + Cast(c_grp AS NVARCHAR(50)) + '' AS [text()]" + Environment.NewLine;
+            sql += "        FROM   grp_t019" + Environment.NewLine;
+            sql += "        WHERE  " + colName + " = "+ v + "" + Environment.NewLine; 
+            sql += "        FOR xml path('')) AS Sub(list)" + Environment.NewLine;
+            object groups = await _dbUtility.ExecuteQuery(sql);
+            return groups;
+        }
+        public async Task updatethedata(string groups, string checkColName, string colName, string grpColName)
+        {
+            if (groups != null)
+            {
+                string updateSql1 = $"UPDATE GRP_T019 SET {colName} = -1 WHERE C_GRP IN ({groups})";
+                string updateSql2 = $"UPDATE ASCN_GROUP_USER_DASHBOARD SET {checkColName} = -1 WHERE {grpColName} IN ({groups})";
+
+                await _dbUtility.ExecuteQuery(updateSql1);
+                await _dbUtility.ExecuteQuery(updateSql2);
+            }
+        }
+        public async Task<DataTable> deletethedata(object v, string item)
+        {
+            string deleteSql1 = $"DELETE FROM ASCN_PUB_LAYOUT_DASHBOARDS WHERE DB_ID = {v}";
+            await _dbUtility.ExecuteQuery(deleteSql1);
+
+            string deleteSql2 = $"DELETE FROM tab_publish_dashboards WHERE DB_CODE = '{item.Trim()}'";
+            DataTable dataTable = await _dbUtility.ExecuteQuery(deleteSql2);
+
+            if (dataTable.Rows.Count == 1)
+            {
+                return dataTable;
+            }
+            else
+            {
+                return null; 
+            }
+        }
+
+
     }
 }

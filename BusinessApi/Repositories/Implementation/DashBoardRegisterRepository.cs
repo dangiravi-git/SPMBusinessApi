@@ -2,9 +2,12 @@
 using BusinessApi.Models;
 using BusinessApi.Repositories.Interface;
 using BusinessApi.Utils;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System;
 using System.Data;
 using System.Net;
+using System.Resources;
+using System.Text;
 
 namespace BusinessApi.Repositories.Implementation
 {
@@ -206,6 +209,91 @@ namespace BusinessApi.Repositories.Implementation
             }
             return groupReTransferId;
         }
+        public async Task<string> DeleteRecords(string val)
+        {
+            DataTable result = null;
+            string[] str = val.Split(',');
+            
 
+            foreach (string item in str)
+            {
+                DataRow type = await _projectListDao.GetTypeVal(item);
+                StringBuilder sqlString = new StringBuilder();
+
+                var columnname = GetColumnsValues(type[0].ToString());
+                string colName = columnname.columnname;
+                string grpColName = columnname.grpColumnname;
+                string checkColName = columnname.ischeckColumnName;
+
+                object groups = await _projectListDao.GetGroupVal(colName, type[1]);
+                string groupsAsString = ConvertGroupsToString(groups);
+                if (groups != null && groups != DBNull.Value && groupsAsString != "" && groupsAsString != null)
+                {
+                    await _projectListDao.updatethedata(groupsAsString, checkColName, colName, grpColName);
+                }
+                result = await _projectListDao.deletethedata(type[1], item);
+            }
+            var msg = "error";
+            if (result == null)
+            {
+                msg = "Data Deleted Sucessfully";
+            }
+            return msg;
+        }
+        public (string columnname, string grpColumnname, string ischeckColumnName) GetColumnsValues(string val)
+        {
+            string columnname = "";
+            string grpColumnname = "";
+            string ischeckColumnName = "";
+            switch (val)
+            {
+                case "H":
+                    columnname = "HP_Dashboard";
+                    grpColumnname = "HP_C_GRP";
+                    ischeckColumnName = "isChecked_HP";
+                    break;
+                case "P":
+                    columnname = "PHP_Dashboard";
+                    grpColumnname = "PHP_C_GRP";
+                    ischeckColumnName = "isChecked_PHP";
+                    break;
+                case "S":
+                    columnname = "SP_Dashboard";
+                    grpColumnname = "SP_C_GRP";
+                    ischeckColumnName = "isChecked_SP";
+                    break;
+                case "F":
+                    columnname = "PFP_Dashboard";
+                    grpColumnname = "PFP_C_GRP";
+                    ischeckColumnName = "isChecked_PFP";
+                    break;
+                case "M":
+                    columnname = "PRG_Dashboard";
+                    grpColumnname = "PRG_C_GRP";
+                    ischeckColumnName = "isChecked_PRG";
+                    break;
+            }
+            return (columnname, grpColumnname, ischeckColumnName);
+        }
+        private string ConvertGroupsToString(object groups)
+        {
+            if (groups is DataTable dt)
+            {
+                var values = dt.AsEnumerable()
+                              .Select(row => row.Field<string>("Column1"))
+                              .Where(value => !string.IsNullOrEmpty(value))
+                              .ToArray();
+                return string.Join(",", values);
+            }
+            else if (groups is string groupsString)
+            {
+                
+                return groupsString;
+            }
+            else
+            {
+                return null;
+            }
+        }
     }
 }
