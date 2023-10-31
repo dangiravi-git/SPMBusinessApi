@@ -8,7 +8,7 @@ using Microsoft.IdentityModel.Tokens;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddScoped<IDashBoardRegisterRepository, DashBoardRegisterRepository>();
-builder.Services.AddScoped<IDashBoardRegisterDao, DashBoardRegisterDao>();
+builder.Services.AddScoped<IDashBoardRegisterDao, DashBoardRegisterDao>(); 
 builder.Services.AddScoped<IDbUtility, DbUtility>();
 
 builder.Services.AddControllers();

@@ -1,4 +1,5 @@
 ﻿using BusinessApi.Models;
+using System.Data;
 
 namespace BusinessApi.Repositories.Interface
 {
@@ -6,5 +7,6 @@ namespace BusinessApi.Repositories.Interface
     {
         Task<List<DashBoardRegisterViewTypeViewModel>> GetProject();
         Task<DashboardDto> CreateNewDashboard(DashboardDto dashboardDto);
+        Task<List<DashboardTypeModel>> GetBindData(string dashboardId, string dashboardType);
     }
 }

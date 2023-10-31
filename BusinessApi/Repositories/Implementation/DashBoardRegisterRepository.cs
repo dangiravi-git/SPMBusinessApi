@@ -63,5 +63,26 @@ namespace BusinessApi.Repositories.Implementation
             }
             return dashboard;
         }
+        public async Task<List<DashboardTypeModel>> GetBindData(string dashboardId, string dashboardType)
+        {
+            DataTable dashbordsdata = await _projectListDao.GetBindData(dashboardId, dashboardType);
+            List<DashboardTypeModel> DashboardTypeModel = new();
+            if (dashbordsdata != null)
+            {
+                foreach (DataRow row in dashbordsdata.Rows)
+                {
+                    var AddviewModel = new DashboardTypeModel
+                    {
+
+                        DashBoardType = row["DashBoardType"].ToString(),
+                        C_UTEN = row["C_UTEN"].ToString(),
+                        S_NOM = row["S_NOM"].ToString(),
+                        
+                    };
+                    DashboardTypeModel.Add(AddviewModel);
+                }
+            }
+            return DashboardTypeModel;
+        }
     }
 }

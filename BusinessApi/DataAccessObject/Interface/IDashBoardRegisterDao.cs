@@ -9,5 +9,6 @@ namespace BusinessApi.DataAccessObject.Interface
         Task<int> CreateNewDashboard(string? code, string? type, string? description, double createdBy, string isWf);
         Task CreateLayoutAssociationWithDashboard(int dashboardId, int layoutId, int layoutSeq);
         Task<DataTable> IsDashboardCodeAlreadyExists(string code);
+        Task<DataTable> GetBindData(string dashboardId, string dashboardType);
     }
 }

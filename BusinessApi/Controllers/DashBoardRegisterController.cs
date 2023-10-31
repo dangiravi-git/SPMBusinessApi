@@ -1,7 +1,10 @@
-﻿using BusinessApi.Models;
+﻿using Azure;
+using BusinessApi.Models;
 using BusinessApi.Repositories.Interface;
 using BusinessApi.Utils.Response;
 using Microsoft.AspNetCore.Mvc;
+using System.Data;
+using System.Text;
 
 namespace BusinessApi.Controllers
 {
@@ -65,5 +68,30 @@ namespace BusinessApi.Controllers
             return Ok(response);
         }
 
+        [HttpGet("BindSelectedRolesDataPopup")]
+        public async Task<ActionResult<ApiResponse<DashboardTypeModel>>> BindSelectedRolesDataPopup(string dashboardId, string dashboardType)
+        {
+            ApiResponse<List<DashboardTypeModel>> response;
+            try
+            {
+                var dataList = await _repository.GetBindData(dashboardId, dashboardType);
+                response = new ApiResponse<List<DashboardTypeModel>>
+                {
+                    IsSuccess = true,
+                    Message = "",
+                    Item = dataList
+                };
+            }
+            catch (Exception ex)
+            {
+                response = new ApiResponse<List<DashboardTypeModel>>
+                {
+                    IsSuccess = false,
+                    Message = ex.Message,
+                    Item = new List<DashboardTypeModel>()
+                };
+            }
+            return Ok(response);
+        }
     }
 }

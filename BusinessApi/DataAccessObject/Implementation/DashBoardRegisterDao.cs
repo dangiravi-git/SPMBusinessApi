@@ -3,6 +3,7 @@ using BusinessApi.Models;
 using BusinessApi.Utils;
 using System.Data;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace BusinessApi.DataAccessObject.Implementation
 {
@@ -24,7 +25,7 @@ namespace BusinessApi.DataAccessObject.Implementation
         {
             StringBuilder sql = new();
             sql.Append("INSERT INTO TAB_PUBLISH_DASHBOARDS ( [DB_ID],[DB_CODE] ,[DB_DESCRIPTION] ,[CreatedBy] ,[DB_CREATION_DATE] ,[DB_TYPE] , [IS_WF])");
-            sql.Append(" Values((select (ISNULL(MAX(DB_ID),0) + 1) as id from TAB_PUBLISH_DASHBOARDS),'"+ code + "','"+ description  +"','"+ createdBy + "',getdate(),'"+ type +"','"+ isWf + "')");
+            sql.Append(" Values((select (ISNULL(MAX(DB_ID),0) + 1) as id from TAB_PUBLISH_DASHBOARDS),'" + code + "','" + description + "','" + createdBy + "',getdate(),'" + type + "','" + isWf + "')");
             int records = await _dbUtility.QueryExec(sql.ToString());
             return records;
         }
@@ -32,7 +33,7 @@ namespace BusinessApi.DataAccessObject.Implementation
         {
             StringBuilder sql = new();
             sql.Append("INSERT INTO ASCN_PUB_LAYOUT_DASHBOARDS(DB_ID, P_LAYOUT_ID, LAYOUT_SEQ)");
-            sql.Append("Values("+dashboardId+ "," + layoutId + "," + layoutSeq + ")");
+            sql.Append("Values(" + dashboardId + "," + layoutId + "," + layoutSeq + ")");
             int records = await _dbUtility.QueryExec(sql.ToString());
         }
         public async Task<DataTable> IsDashboardCodeAlreadyExists(string code)
@@ -42,5 +43,16 @@ namespace BusinessApi.DataAccessObject.Implementation
             var dt = await _dbUtility.ExecuteQuery(sql.ToString());
             return dt;
         }
+        public async Task<DataTable> GetBindData(string dashboardId, string dashboardType)
+        {
+            List<DashboardTypeModel> modelProjectListViewTypenew = new();
+            string sql = "SELECT 'G' AS DashBoardType, CONVERT(varchar, g.C_GRP) + '$G' AS C_UTEN, S_GRP_NOM AS S_NOM " +
+                         "FROM GRP_T019 g " +
+                         "JOIN ASCN_GRP_AZD_T204 a ON a.C_GRP = g.C_GRP AND a.C_AZD = " + 2 + " " +
+                         "WHERE ISNULL(" + dashboardType + "_DASHBOARD, -1) = " + dashboardId;
+            var result = await _dbUtility.ExecuteQuery(sql);
+            return result;
+        }
+
     }
 }

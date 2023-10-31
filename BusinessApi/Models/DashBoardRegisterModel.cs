@@ -24,4 +24,11 @@
         public int LayoutSeq { get; set; }
 
     }
+    public class DashboardTypeModel
+    {
+        public string? DashBoardType { get; set; }
+        public string? C_UTEN { get; set; }
+        public string? S_NOM { get; set; }
+    }
+
 }
