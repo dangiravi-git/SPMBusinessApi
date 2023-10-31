@@ -53,6 +53,26 @@ namespace BusinessApi.DataAccessObject.Implementation
             var result = await _dbUtility.ExecuteQuery(sql);
             return result;
         }
-
+        public async Task<DataTable> GetBindAvailableGroupDataWithId(string dashboardId, string dashboardType, string funzlPermission)
+        {
+            string sql;
+                sql = "SELECT CONVERT(VARCHAR, C_GRP) + '$G' AS C_UTEN, S_GRP_NOM AS S_NOM " +
+                      " FROM GRP_T019 " +
+                      "WHERE C_GRP IN (SELECT C_GRP FROM ASCN_GRP_AZD_T204 " +
+                      "WHERE C_AZD = 2 AND C_GRP IN (SELECT C_GRP FROM ASCN_GRP_FUNZL_T018 WHERE C_FUNZL IN (" + funzlPermission + "))) " +
+                      "AND php_dashboard NOT IN (" + dashboardId + ") AND ISNULL(" + dashboardType + "_DASHBOARD, -1) = -1";
+            var result = await _dbUtility.ExecuteQuery(sql);
+            return result;
+        }
+        public async Task<DataTable> GetBindAvailableGroupDataWithType(string dashboardType, string funzlPermission)
+        {
+            string sql;
+            sql = "SELECT CONVERT(VARCHAR, C_GRP) + '$G' AS C_UTEN, S_GRP_NOM AS S_NOM " +
+                      "FROM GRP_T019 " +
+                      "WHERE C_GRP IN (SELECT C_GRP FROM ASCN_GRP_AZD_T204 " +
+                      "WHERE C_AZD = 2 AND C_GRP IN (SELECT C_GRP FROM ASCN_GRP_FUNZL_T018 WHERE C_FUNZL IN (" + funzlPermission + "))) AND ISNULL(" + dashboardType + "_DASHBOARD, -1) = -1";
+            var result = await _dbUtility.ExecuteQuery(sql);
+            return result;
+        }
     }
 }

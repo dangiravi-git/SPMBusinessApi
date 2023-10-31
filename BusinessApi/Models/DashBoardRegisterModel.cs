@@ -27,8 +27,8 @@
     public class DashboardTypeModel
     {
         public string? DashBoardType { get; set; }
-        public string? C_UTEN { get; set; }
-        public string? S_NOM { get; set; }
+        public string? Value { get; set; }
+        public string? Name { get; set; }
     }
 
 }

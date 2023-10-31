@@ -68,8 +68,8 @@ namespace BusinessApi.Controllers
             return Ok(response);
         }
 
-        [HttpGet("BindSelectedRolesDataPopup")]
-        public async Task<ActionResult<ApiResponse<DashboardTypeModel>>> BindSelectedRolesDataPopup(string dashboardId, string dashboardType)
+        [HttpGet("SelectedRoles")]
+        public async Task<ActionResult<ApiResponse<DashboardTypeModel>>> SelectedRoles(string dashboardId, string dashboardType)
         {
             ApiResponse<List<DashboardTypeModel>> response;
             try
@@ -94,6 +94,31 @@ namespace BusinessApi.Controllers
             }
             return Ok(response);
         }
-       
+        [HttpGet("AvailableRoles")]
+        public async Task<ActionResult<ApiResponse<DashboardTypeModel>>> AvailableRoles(string dashboardId, string dashboardType, string typename, string typeValues, string reTransferValue, string checkIsTransferButtonClick)
+        {
+            ApiResponse<List<DashboardTypeModel>> response;
+            try
+            {
+                var type = _repository.SetDashboardType(dashboardType);
+                var dataList = await _repository.GetBindAvailableGroupData(dashboardId, type, typename, typeValues, reTransferValue, checkIsTransferButtonClick);
+                response = new ApiResponse<List<DashboardTypeModel>>
+                {
+                    IsSuccess = true,
+                    Message = "",
+                    Item = dataList
+                };
+            }
+            catch (Exception ex)
+            {
+                response = new ApiResponse<List<DashboardTypeModel>>
+                {
+                    IsSuccess = false,
+                    Message = ex.Message,
+                    Item = new List<DashboardTypeModel>()
+                };
+            }
+            return Ok(response);
+        }
     }
 }
