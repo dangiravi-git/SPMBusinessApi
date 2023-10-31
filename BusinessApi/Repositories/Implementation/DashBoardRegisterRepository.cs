@@ -234,7 +234,7 @@ namespace BusinessApi.Repositories.Implementation
                 result = await _projectListDao.deletethedata(type[1], item);
             }
             var msg = "error";
-            if (result == null)
+            if (result.Rows.Count == 0)
             {
                 msg = "Data Deleted Sucessfully";
             }

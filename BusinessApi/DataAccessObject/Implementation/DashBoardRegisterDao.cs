@@ -113,17 +113,7 @@ namespace BusinessApi.DataAccessObject.Implementation
 
             string deleteSql2 = $"DELETE FROM tab_publish_dashboards WHERE DB_CODE = '{item.Trim()}'";
             DataTable dataTable = await _dbUtility.ExecuteQuery(deleteSql2);
-
-            if (dataTable.Rows.Count == 1)
-            {
-                return dataTable;
-            }
-            else
-            {
-                return null; 
-            }
+             return dataTable;
         }
-
-
     }
 }
