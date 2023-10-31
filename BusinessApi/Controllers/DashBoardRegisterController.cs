@@ -74,7 +74,8 @@ namespace BusinessApi.Controllers
             ApiResponse<List<DashboardTypeModel>> response;
             try
             {
-                var dataList = await _repository.GetBindData(dashboardId, dashboardType);
+                var type = _repository.SetDashboardType(dashboardType);
+                var dataList = await _repository.GetBindData(dashboardId, type);
                 response = new ApiResponse<List<DashboardTypeModel>>
                 {
                     IsSuccess = true,
@@ -93,5 +94,6 @@ namespace BusinessApi.Controllers
             }
             return Ok(response);
         }
+       
     }
 }

@@ -76,13 +76,41 @@ namespace BusinessApi.Repositories.Implementation
 
                         DashBoardType = row["DashBoardType"].ToString(),
                         C_UTEN = row["C_UTEN"].ToString(),
-                        S_NOM = row["S_NOM"].ToString(),
+                        S_NOM = row["S_NOM"].ToString(  ),
                         
                     };
-                    DashboardTypeModel.Add(AddviewModel);
+                    DashboardTypeModel.Add(AddviewModel);           
                 }
             }
             return DashboardTypeModel;
         }
+        public string SetDashboardType(string type)
+        {
+            string hdnDashboardType;
+
+            if (type == "Initiative Dashboard")
+            {
+                hdnDashboardType = "PHP";
+            }
+            else if (type == "Portfolio Dashboard")
+            {
+                hdnDashboardType = "PFP";
+            }
+            else if (type == "Strategy Dashboard")
+            {
+                hdnDashboardType = "SP";
+            }
+            else if (type == "Program Dashboard")
+            {
+                hdnDashboardType = "PRG";
+            }
+            else
+            {
+                hdnDashboardType = "HP";
+            }
+
+            return hdnDashboardType;
+        }
+
     }
 }
