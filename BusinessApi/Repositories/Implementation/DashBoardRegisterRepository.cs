@@ -137,25 +137,23 @@ namespace BusinessApi.Repositories.Implementation
         {
             string hdnDashboardType;
 
-            if (type == "Initiative Dashboard")
+            switch (type)
             {
-                hdnDashboardType = "PHP";
-            }
-            else if (type == "Portfolio Dashboard")
-            {
-                hdnDashboardType = "PFP";
-            }
-            else if (type == "Strategy Dashboard")
-            {
-                hdnDashboardType = "SP";
-            }
-            else if (type == "Program Dashboard")
-            {
-                hdnDashboardType = "PRG";
-            }
-            else
-            {
-                hdnDashboardType = "HP";
+                case "Initiative Dashboard":
+                    hdnDashboardType = "PHP";
+                    break;
+                case "Portfolio Dashboard":
+                    hdnDashboardType = "PFP";
+                    break;
+                case "Strategy Dashboard":
+                    hdnDashboardType = "SP";
+                    break;
+                case "Program Dashboard":
+                    hdnDashboardType = "PRG";
+                    break;
+                default:
+                    hdnDashboardType = "HP";
+                    break;
             }
 
             return hdnDashboardType;
@@ -213,30 +211,29 @@ namespace BusinessApi.Repositories.Implementation
         {
             DataTable result = null;
             string[] str = val.Split(',');
-            
+            var msg = "error";
 
             foreach (string item in str)
             {
+                
                 DataRow type = await _projectListDao.GetTypeVal(item);
                 StringBuilder sqlString = new StringBuilder();
-
-                var columnname = GetColumnsValues(type[0].ToString());
-                string colName = columnname.columnname;
-                string grpColName = columnname.grpColumnname;
-                string checkColName = columnname.ischeckColumnName;
-
-                object groups = await _projectListDao.GetGroupVal(colName, type[1]);
-                string groupsAsString = ConvertGroupsToString(groups);
-                if (groups != null && groups != DBNull.Value && groupsAsString != "" && groupsAsString != null)
+                if(type != null)
                 {
-                    await _projectListDao.updatethedata(groupsAsString, checkColName, colName, grpColName);
+                    var columnname = GetColumnsValues(type[0].ToString());
+                    string colName = columnname.columnname;
+                    string grpColName = columnname.grpColumnname;
+                    string checkColName = columnname.ischeckColumnName;
+
+                    object groups = await _projectListDao.GetGroupVal(colName, type[1]);
+                    string groupsAsString = ConvertGroupsToString(groups);
+                    if (groups != null && groups != DBNull.Value && groupsAsString != "" && groupsAsString != null)
+                    {
+                        await _projectListDao.updatethedata(groupsAsString, checkColName, colName, grpColName);
+                    }
+                    result = await _projectListDao.deletethedata(type[1], item);
+                    msg = "Data Deleted Sucessfully";
                 }
-                result = await _projectListDao.deletethedata(type[1], item);
-            }
-            var msg = "error";
-            if (result.Rows.Count == 0)
-            {
-                msg = "Data Deleted Sucessfully";
             }
             return msg;
         }
@@ -295,9 +292,112 @@ namespace BusinessApi.Repositories.Implementation
                 return null;
             }
         }
-        public Task<List<DashboardLayoutDto>> GetLayoutsWidgetAssociation()
+        public async Task<List<DashboardLayoutDto>> GetLayoutsWidgetAssociation(string selectedValue)
         {
-            
+            int dashboardType = GetDashboardType(selectedValue);
+            DataTable listforlayout = null;
+            DataTable listforwidget = null;
+            DataTable dtMenu  = null;
+            listforlayout = await _projectListDao.GetLayoutData(selectedValue);
+            listforwidget = await _projectListDao.GetWidgetData(selectedValue, dashboardType);
+            dtMenu = await _projectListDao.GetMenuList();
+            listforwidget = UpdateWidgetDataWithMenu(listforwidget, dtMenu);
+            Dictionary<int, List<WidgetDto>> widgetsByLayoutId = ExtractWidgetsByLayoutId(listforwidget);
+
+            List<DashboardLayoutDto> dashboardLayouts = BuildDashboardLayouts(listforlayout, widgetsByLayoutId);
+
+            return dashboardLayouts;
+        }
+        public DataTable UpdateWidgetDataWithMenu(DataTable dtWidgets, DataTable dtMenu)
+        {
+            foreach (DataRow drWidget in dtWidgets.Rows)
+            {
+                string name = "";
+                if (!Convert.IsDBNull(drWidget[3]))
+                {
+                    name = drWidget[3].ToString();
+                }
+
+                if (Convert.ToInt16(drWidget[2]) > 1000)
+                {
+                    int fID = Convert.ToInt16(drWidget[2]) / 1000;
+                    int remin = Convert.ToInt16(drWidget[2]) % 1000;
+                    DataRow[] drSelect = dtMenu.Select("f_id=" + fID + " and id=" + remin);
+                    if (drSelect.Length > 0)
+                    {
+                        name = drSelect[0]["menu_name"].ToString();
+                    }
+                }
+
+                drWidget[3] = name;
+            }
+            return dtWidgets;
+        }
+        public int GetDashboardType(string selectedValue)
+        {
+            int dashboardType;
+
+            switch (selectedValue)
+            {
+                case "P":
+                    dashboardType = 4;
+                    break;
+                case "F":
+                    dashboardType = 1;
+                    break;
+                case "S":
+                    dashboardType = 3;
+                    break;
+                case "M":
+                    dashboardType = 2;
+                    break;
+                default:
+                    dashboardType = 0;
+                    break;
+            }
+            return dashboardType;
+        }
+        private Dictionary<int, List<WidgetDto>> ExtractWidgetsByLayoutId(DataTable listforwidget)
+        {
+            Dictionary<int, List<WidgetDto>> widgetsByLayoutId = new();
+            foreach (DataRow row in listforwidget.Rows)
+            {
+                int layoutId = Convert.ToInt32(row["P_LAYOUT_ID"]);
+                string widgetName = row["WIDGET_NAME"].ToString();
+
+                if (!widgetsByLayoutId.ContainsKey(layoutId))
+                {
+                    widgetsByLayoutId[layoutId] = new List<WidgetDto>();
+                }
+
+                widgetsByLayoutId[layoutId].Add(new WidgetDto
+                {
+                    WidgetId = Convert.ToInt32(row["WIDGET_ID"]),
+                    WidgetName = widgetName
+                });
+            }
+            return widgetsByLayoutId;
+        }
+
+        private List<DashboardLayoutDto> BuildDashboardLayouts(DataTable listforlayout, Dictionary<int, List<WidgetDto>> widgetsByLayoutId)
+        {
+            List<DashboardLayoutDto> dashboardLayouts = new List<DashboardLayoutDto>();
+            foreach (DataRow row in listforlayout.Rows)
+            {
+                int layoutId = Convert.ToInt32(row["ID"]);
+                string layoutName = row["des"].ToString();
+
+                DashboardLayoutDto dashboardLayout = new DashboardLayoutDto
+                {
+                    LayoutId = layoutId,
+                    LayoutName = layoutName,
+                    IsAvailable = 1,
+                    Widgets = widgetsByLayoutId.ContainsKey(layoutId) ? widgetsByLayoutId[layoutId] : new List<WidgetDto>()
+                };
+
+                dashboardLayouts.Add(dashboardLayout);
+            }
+            return dashboardLayouts;
         }
     }
 }

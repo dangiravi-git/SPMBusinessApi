@@ -16,5 +16,8 @@ namespace BusinessApi.DataAccessObject.Interface
         Task<object> GetGroupVal(string colName, object v);
         Task updatethedata(string groups, string checkColName, string colName, string grpColName);
         Task<DataTable> deletethedata(object v, string item);
+        Task<DataTable> GetLayoutData(string selectedValue);
+        Task<DataTable> GetWidgetData(string selectedValue, int dashboardType);
+        Task<DataTable> GetMenuList();
     }
 }

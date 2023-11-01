@@ -12,6 +12,6 @@ namespace BusinessApi.Repositories.Interface
         string SetDashboardType(string type);
         Task<List<DashboardTypeModel>> GetBindAvailableGroupData(string dashboardId, string dashboardType, string typename, string typeValues, string reTransferValue, string checkIsTransferButtonClick);
         Task<string> DeleteRecords(string val);
-        Task<List<DashboardLayoutDto>> GetLayoutsWidgetAssociation();
+        Task<List<DashboardLayoutDto>> GetLayoutsWidgetAssociation(string SelectedDasboardType);
     }
 }

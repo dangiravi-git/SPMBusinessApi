@@ -115,5 +115,26 @@ namespace BusinessApi.DataAccessObject.Implementation
             DataTable dataTable = await _dbUtility.ExecuteQuery(deleteSql2);
              return dataTable;
         }
+        public async Task<DataTable> GetLayoutData(string selectedValue)
+        {
+            string sql = "select P_LAYOUT_ID as ID, LAYOUT_NAME + ' - ' + Revision as des from TAB_PUBLISH_LAYOUTS where LAYOUT_TYPE = '" + selectedValue + "'";
+            DataTable dataTable = await _dbUtility.ExecuteQuery(sql);
+            return dataTable;
+        }
+        public async Task<DataTable> GetWidgetData(string selectedValue, int dashboardType)
+        {
+            string dtWidgetsSql = "select distinct L.P_LAYOUT_ID, layout_name, M.WIDGET_ID, WIDGET_NAME" +
+                                  " from TAB_PUBLISH_LAYOUTS L join TAB_MAPPING_PUBLISH_LAYOUTS M on L.P_LAYOUT_ID = M.P_LAYOUT_ID " +
+                                  " left join tab_gen_widgets W on W.WIDGET_ID = M.WIDGET_ID and L.LAYOUT_TYPE = '" + selectedValue + "'" +
+                                  " and w.widget_type = " + dashboardType;
+            DataTable dataTable = await _dbUtility.ExecuteQuery(dtWidgetsSql);
+            return dataTable;
+        }
+        public async Task<DataTable> GetMenuList()
+        {
+            string dtMenuSql = "select id,F_ID,MENU_NAME from BPM_MENU where C_AZD = 2";
+            DataTable dataTable = await _dbUtility.ExecuteQuery(dtMenuSql);
+            return dataTable;
+        }
     }
 }

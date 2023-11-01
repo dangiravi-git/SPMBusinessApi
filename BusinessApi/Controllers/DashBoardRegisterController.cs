@@ -128,12 +128,12 @@ namespace BusinessApi.Controllers
         }
 
         [HttpGet("GetLayoutsWidgetAssociation")]
-        public async Task<ActionResult<ApiResponse<DashboardLayoutDto>>> GetLayoutsWidgetAssociation()
+        public async Task<ActionResult<ApiResponse<DashboardLayoutDto>>> GetLayoutsWidgetAssociation(string SelectedDasboardType)
         {
             ApiResponse<List<DashboardLayoutDto>> response;
             try
             {
-                List<DashboardLayoutDto> dataList = await _repository.GetLayoutsWidgetAssociation();
+                List<DashboardLayoutDto> dataList = await _repository.GetLayoutsWidgetAssociation(SelectedDasboardType);
                 response = new ApiResponse<List<DashboardLayoutDto>>
                 {
                     IsSuccess = true,
