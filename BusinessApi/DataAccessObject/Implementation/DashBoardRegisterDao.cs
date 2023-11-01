@@ -39,7 +39,7 @@ namespace BusinessApi.DataAccessObject.Implementation
         public async Task<DataTable> IsDashboardCodeAlreadyExists(string code)
         {
             StringBuilder sql = new();
-            sql.Append("select [DB_ID] DB_ID from TAB_PUBLISH_DASHBOARDS where DB_CODE =" + code);
+            sql.Append("select [DB_ID] DB_ID from TAB_PUBLISH_DASHBOARDS where DB_CODE ='" + code+"'");
             var dt = await _dbUtility.ExecuteQuery(sql.ToString());
             return dt;
         }

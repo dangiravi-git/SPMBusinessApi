@@ -46,7 +46,7 @@ namespace BusinessApi.Repositories.Implementation
         {
             int newDbId = 0;
             var isCodeExists = await _projectListDao.IsDashboardCodeAlreadyExists(dashboard.Code);
-            if (isCodeExists != null && isCodeExists.Rows.Count>0 && Convert.ToBoolean(isCodeExists.Rows[0][0]))
+            if (isCodeExists != null && isCodeExists.Rows.Count==0 )
             {
                 int created = await _projectListDao.CreateNewDashboard(dashboard.Code, dashboard.DashboardType, dashboard.Description,dashboard.CreatedBy,dashboard.IsWf);
                 if (created != 0)
@@ -66,6 +66,10 @@ namespace BusinessApi.Repositories.Implementation
                    
                 }
                 dashboard.DashboardId = newDbId;
+            }
+            else if (isCodeExists != null && Convert.ToBoolean(isCodeExists.Rows[0][0]))
+            {
+                throw new Exception("Code is already exists!");
             }
             return dashboard;
         }
