@@ -295,5 +295,9 @@ namespace BusinessApi.Repositories.Implementation
                 return null;
             }
         }
+        public Task<List<DashboardLayoutDto>> GetLayoutsWidgetAssociation()
+        {
+            
+        }
     }
 }

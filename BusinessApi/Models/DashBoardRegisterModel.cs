@@ -31,4 +31,19 @@
         public string? Name { get; set; }
     }
 
+    public class DashboardLayoutDto
+    {
+        public int LayoutId { get; set; }
+        public string LayoutName { get; set; }
+        public int IsAvailable { get; set; }
+        public List<WidgetDto> Widgets { get; set; }
+
+    }
+    public class WidgetDto
+    {
+        public int WidgetId { get; set; }
+        public string WidgetName { get; set; }
+
+    } 
+
 }

@@ -126,5 +126,32 @@ namespace BusinessApi.Controllers
             string resultMessage = await _repository.DeleteRecords(val);
             return Content(resultMessage);
         }
+
+        [HttpGet("GetLayoutsWidgetAssociation")]
+        public async Task<ActionResult<ApiResponse<DashboardLayoutDto>>> GetLayoutsWidgetAssociation()
+        {
+            ApiResponse<List<DashboardLayoutDto>> response;
+            try
+            {
+                List<DashboardLayoutDto> dataList = await _repository.GetLayoutsWidgetAssociation();
+                response = new ApiResponse<List<DashboardLayoutDto>>
+                {
+                    IsSuccess = true,
+                    Message = "",
+                    Item = dataList
+                };
+            }
+            catch (Exception ex)
+            {
+                response = new ApiResponse<List<DashboardLayoutDto>>
+                {
+                    IsSuccess = false,
+                    Message = ex.Message,
+                    Item = new List<DashboardLayoutDto>()
+                };
+            }
+            return Ok(response);
+        }
+
     }
 }
