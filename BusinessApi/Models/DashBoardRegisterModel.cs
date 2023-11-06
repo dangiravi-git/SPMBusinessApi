@@ -45,6 +45,13 @@
         public int WidgetId { get; set; }
         public string WidgetName { get; set; }
 
-    } 
+    }
+    public class Dashboardassociatedata
+    {
+        public string dashboardType { get; set; }
+        public string selectedval { get; set; }
+        public string dashboardId { get; set; }
+
+    }
 
 }

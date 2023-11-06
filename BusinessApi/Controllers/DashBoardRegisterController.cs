@@ -185,12 +185,13 @@ namespace BusinessApi.Controllers
             }
             return Ok(response);
         }
+        
         [HttpPost("SaveDashboardAssociation")]
-        public async Task<IActionResult> SaveDashboardAssociation(string selectedval, string dashboardId, string dashboardType)
+        public async Task<IActionResult> SaveDashboardAssociation([FromBody] Dashboardassociatedata dashboardDto)
         {
             try
             {
-                string resultMessage = await _repository.SaveDashboardAssociationData(selectedval, dashboardId, dashboardType);
+                string resultMessage = await _repository.SaveDashboardAssociationData(dashboardDto.selectedval, dashboardDto.dashboardId, dashboardDto.dashboardType);
                 return Content(resultMessage);
             }
             catch (Exception ex)
@@ -198,7 +199,6 @@ namespace BusinessApi.Controllers
                 return BadRequest($"An error occurred: {ex.Message}");
             }
         }
-
 
     }
 }
