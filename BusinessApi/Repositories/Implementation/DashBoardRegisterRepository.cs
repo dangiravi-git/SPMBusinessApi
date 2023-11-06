@@ -448,7 +448,7 @@ namespace BusinessApi.Repositories.Implementation
                     }
                 }
             }
-            else if (dashboardId != "" && finalSelectedUsersRoleGroups.ToString() == "")
+            else if (dashboardId != "" && finalSelectedUsersRoleGroups[0] == "")
             {
                 await _projectListDao.RestAllAssociation(dashboardId, type);
             }
