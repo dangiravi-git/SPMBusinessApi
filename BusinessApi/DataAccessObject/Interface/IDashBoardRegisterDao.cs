@@ -19,5 +19,7 @@ namespace BusinessApi.DataAccessObject.Interface
         Task<DataTable> GetLayoutData(string selectedValue);
         Task<DataTable> GetWidgetData(string selectedValue, int dashboardType);
         Task<DataTable> GetMenuList();
+        Task<DataTable> GetSelectedLayoutData(string layoutType, Int64 Id);
+        Task<DataRow> GetDataRowByID(Int64 ID);
     }
 }

@@ -298,19 +298,46 @@ namespace BusinessApi.Repositories.Implementation
         }
         public async Task<List<DashboardLayoutDto>> GetLayoutsWidgetAssociation(string selectedValue)
         {
+            return await GetDashboardLayouts(selectedValue);
+        }
+        public async Task<List<DashboardLayoutDto>> EditLayoutsWidgetAssociation(Int64 Id)
+        {
+            DataRow resultRow = await _projectListDao.GetDataRowByID(Id);
+            string selectedValue = resultRow?.Field<string>(0) ?? string.Empty;
             int dashboardType = GetDashboardType(selectedValue);
-            DataTable listforlayout = null;
-            DataTable listforwidget = null;
-            DataTable dtMenu  = null;
-            listforlayout = await _projectListDao.GetLayoutData(selectedValue);
-            listforwidget = await _projectListDao.GetWidgetData(selectedValue, dashboardType);
-            dtMenu = await _projectListDao.GetMenuList();
+            DataTable listforlayout = await _projectListDao.GetLayoutData(selectedValue);
+            DataTable listforwidget = await _projectListDao.GetWidgetData(selectedValue, dashboardType);
+            DataTable dtMenu = await _projectListDao.GetMenuList();
             listforwidget = UpdateWidgetDataWithMenu(listforwidget, dtMenu);
+            DataTable dtselecteddata = await _projectListDao.GetSelectedLayoutData(selectedValue, Id);
+            if (dtselecteddata.Rows.Count > 1 && listforlayout.Rows.Count > 1)
+            {
+                List<int> selectedLayoutIds = dtselecteddata.AsEnumerable()
+                    .Select(row => Convert.ToInt32(row.Field<int>("id")))
+                    .ToList();
+
+                listforlayout = listforlayout.AsEnumerable()
+                   .Where(row => !selectedLayoutIds.Contains(Convert.ToInt32(row["ID"])))
+                   .CopyToDataTable();
+            }
+            Dictionary<int, List<WidgetDto>> widgetsByLayoutId = ExtractWidgetsByLayoutId(listforwidget);
+            List<DashboardLayoutDto> dashboardLayouts = BuildDashboardLayouts(listforlayout, widgetsByLayoutId, 1, "A");
+            List<DashboardLayoutDto> dashboardLayoutsselcted = BuildDashboardLayouts(dtselecteddata, widgetsByLayoutId, 0,"S");
+            List<DashboardLayoutDto> mergedDashboardLayouts = dashboardLayouts.Concat(dashboardLayoutsselcted).ToList();
+
+            return mergedDashboardLayouts;
+        }
+        private async Task<List<DashboardLayoutDto>> GetDashboardLayouts(string selectedValue)
+        {
+            int dashboardType = GetDashboardType(selectedValue);
+            DataTable listforlayout = await _projectListDao.GetLayoutData(selectedValue);
+            DataTable listforwidget = await _projectListDao.GetWidgetData(selectedValue, dashboardType);
+            DataTable dtMenu = await _projectListDao.GetMenuList();
+            listforwidget = UpdateWidgetDataWithMenu(listforwidget, dtMenu);
+
             Dictionary<int, List<WidgetDto>> widgetsByLayoutId = ExtractWidgetsByLayoutId(listforwidget);
 
-            List<DashboardLayoutDto> dashboardLayouts = BuildDashboardLayouts(listforlayout, widgetsByLayoutId);
-
-            return dashboardLayouts;
+            return BuildDashboardLayouts(listforlayout, widgetsByLayoutId, 1, "A");
         }
         public DataTable UpdateWidgetDataWithMenu(DataTable dtWidgets, DataTable dtMenu)
         {
@@ -383,7 +410,7 @@ namespace BusinessApi.Repositories.Implementation
             return widgetsByLayoutId;
         }
 
-        private List<DashboardLayoutDto> BuildDashboardLayouts(DataTable listforlayout, Dictionary<int, List<WidgetDto>> widgetsByLayoutId)
+        private List<DashboardLayoutDto> BuildDashboardLayouts(DataTable listforlayout, Dictionary<int, List<WidgetDto>> widgetsByLayoutId, Int64 IsAvailable, string layoutType)
         {
             List<DashboardLayoutDto> dashboardLayouts = new List<DashboardLayoutDto>();
             foreach (DataRow row in listforlayout.Rows)
@@ -395,7 +422,8 @@ namespace BusinessApi.Repositories.Implementation
                 {
                     LayoutId = layoutId,
                     LayoutName = layoutName,
-                    IsAvailable = 1,
+                    IsAvailable = IsAvailable,
+                    layoutType = layoutType,
                     Widgets = widgetsByLayoutId.ContainsKey(layoutId) ? widgetsByLayoutId[layoutId] : new List<WidgetDto>()
                 };
 
@@ -403,5 +431,6 @@ namespace BusinessApi.Repositories.Implementation
             }
             return dashboardLayouts;
         }
+
     }
 }

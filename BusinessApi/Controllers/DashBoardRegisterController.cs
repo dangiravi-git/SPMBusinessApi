@@ -123,9 +123,17 @@ namespace BusinessApi.Controllers
         [HttpPost("DeleteRecords")]
         public async Task<IActionResult> DeleteRecords(string val)
         {
-            string resultMessage = await _repository.DeleteRecords(val);
-            return Content(resultMessage);
+            try
+            {
+                string resultMessage = await _repository.DeleteRecords(val);
+                return Content(resultMessage);
+            }
+            catch (Exception ex)
+            {
+                return Content("An error occurred: " + ex.Message);
+            }
         }
+
 
         [HttpGet("GetLayoutsWidgetAssociation")]
         public async Task<ActionResult<ApiResponse<DashboardLayoutDto>>> GetLayoutsWidgetAssociation(string SelectedDasboardType)
@@ -152,6 +160,32 @@ namespace BusinessApi.Controllers
             }
             return Ok(response);
         }
+        [HttpGet("EditLayoutsWidgetAssociation")]
+        public async Task<ActionResult<ApiResponse<DashboardLayoutDto>>> EditLayoutsWidgetAssociation(Int64 Id)
+        {
+            ApiResponse<List<DashboardLayoutDto>> response;
+            try
+            {
+                List<DashboardLayoutDto> dataList = await _repository.EditLayoutsWidgetAssociation(Id);
+                response = new ApiResponse<List<DashboardLayoutDto>>
+                {
+                    IsSuccess = true,
+                    Message = "",
+                    Item = dataList
+                };
+            }
+            catch (Exception ex)
+            {
+                response = new ApiResponse<List<DashboardLayoutDto>>
+                {
+                    IsSuccess = false,
+                    Message = ex.Message,
+                    Item = new List<DashboardLayoutDto>()
+                };
+            }
+            return Ok(response);
+        }
+
 
     }
 }

@@ -35,7 +35,8 @@
     {
         public int LayoutId { get; set; }
         public string LayoutName { get; set; }
-        public int IsAvailable { get; set; }
+        public Int64 IsAvailable { get; set; }
+        public string layoutType { get; set; }
         public List<WidgetDto> Widgets { get; set; }
 
     }

@@ -136,5 +136,30 @@ namespace BusinessApi.DataAccessObject.Implementation
             DataTable dataTable = await _dbUtility.ExecuteQuery(dtMenuSql);
             return dataTable;
         }
+        public async Task<DataTable> GetSelectedLayoutData(string layoutType, Int64 Id)
+        {
+            StringBuilder sql = new StringBuilder();
+            sql.AppendLine("SELECT t.p_layout_id AS id, ");
+            sql.AppendLine("layout_name + ' - ' + revision AS des ");
+            sql.AppendLine("FROM tab_publish_layouts t ");
+            sql.AppendLine("INNER JOIN ascn_pub_layout_dashboards a ");
+            sql.AppendLine("ON t.p_layout_id = a.p_layout_id ");
+            sql.AppendLine("AND LAYOUT_TYPE = '" + layoutType + "' and db_id = " + Id);
+            sql.AppendLine(" ORDER BY a.layout_seq ");
+            DataTable dataTable = await _dbUtility.ExecuteQuery(sql.ToString());
+            return dataTable;
+        }
+        public async Task<DataRow> GetDataRowByID(Int64 ID)
+        {
+            string sql = $"SELECT UPPER(DB_TYPE) FROM TAB_PUBLISH_DASHBOARDS WHERE DB_ID = {ID}";
+            var result = await _dbUtility.ExecuteQuery(sql);
+            if (result.Rows.Count > 0)
+            {
+                return result.Rows[0];
+            }
+
+            return null;
+        }
+
     }
 }
