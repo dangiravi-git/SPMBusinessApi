@@ -431,6 +431,31 @@ namespace BusinessApi.Repositories.Implementation
             }
             return dashboardLayouts;
         }
-
+        public async Task<string> SaveDashboardAssociationData(string selectedval, string dashboardId, string dashboardType)
+        {
+            string[] finalSelectedUsersRoleGroups;
+            var type = SetDashboardType(dashboardType);
+            finalSelectedUsersRoleGroups = selectedval.Split(",");
+            if (selectedval.ToString() != "")
+            {
+                await _projectListDao.RestAllAssociation(dashboardId, type);
+                foreach (string finalSelectedUsersRoleGroup in finalSelectedUsersRoleGroups)
+                {
+                    string[] userRoleGroupId = finalSelectedUsersRoleGroup.Split('$');
+                    if (userRoleGroupId.Length > 1 && userRoleGroupId[1] == "G")
+                    {
+                        await _projectListDao.UpdateAssociationData(dashboardId, type, userRoleGroupId[0]);
+                    }
+                }
+            }
+            else if (dashboardId != "" && finalSelectedUsersRoleGroups.ToString() == "")
+            {
+                await _projectListDao.RestAllAssociation(dashboardId, type);
+            }
+            await _projectListDao.DeleteFromGrpUserDashboard();
+            await _projectListDao.InsertIntoGrpUserDashboard();
+            var msg = "Data saved successfully";
+            return msg;
+        }
     }
 }

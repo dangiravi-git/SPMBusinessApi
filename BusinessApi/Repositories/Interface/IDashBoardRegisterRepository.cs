@@ -14,5 +14,6 @@ namespace BusinessApi.Repositories.Interface
         Task<string> DeleteRecords(string val);
         Task<List<DashboardLayoutDto>> GetLayoutsWidgetAssociation(string SelectedDasboardType);
         Task<List<DashboardLayoutDto>> EditLayoutsWidgetAssociation(Int64 Id);
+        Task<string> SaveDashboardAssociationData(string selectedval, string dashboardId, string dashboardType);
     }
 }

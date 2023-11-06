@@ -160,6 +160,36 @@ namespace BusinessApi.DataAccessObject.Implementation
 
             return null;
         }
-
+        public async Task RestAllAssociation(string dashboardId, string dashboardType)
+        {
+            string sql = "UPDATE grp_t019 SET " + dashboardType + "_DASHBOARD = -1 WHERE " + dashboardType + "_DASHBOARD = " + dashboardId;
+            await _dbUtility.ExecuteQuery(sql);
+        }
+        public async Task UpdateAssociationData(string dashboardId, string dashboardType, string c_grp)
+        {
+            string sql = $"UPDATE grp_t019 SET {dashboardType}_DASHBOARD = {dashboardId} WHERE c_grp = {c_grp}";
+            await _dbUtility.ExecuteQuery(sql);
+        } 
+        public async Task DeleteFromGrpUserDashboard()
+        {
+            string deleteSql = "DELETE FROM ASCN_GROUP_USER_DASHBOARD";
+            await _dbUtility.ExecuteQuery(deleteSql);
+        }
+        public async Task InsertIntoGrpUserDashboard()
+        {
+            string insertSql = "INSERT INTO ASCN_GROUP_USER_DASHBOARD " +
+                               "SELECT DISTINCT A.C_UTEN, A.GroupID, " +
+                               "CASE G.PHP_DASHBOARD WHEN NULL THEN 0 WHEN 0 THEN 0 WHEN -1 THEN 0 ELSE 1 END, " +
+                               "A.GroupID, " +
+                               "CASE G.HP_DASHBOARD WHEN NULL THEN 0 WHEN 0 THEN 0 WHEN -1 THEN 0 ELSE 1 END, " +
+                               "A.P_ELMNT, A.GroupID, " +
+                               "CASE G.SP_DASHBOARD WHEN NULL THEN 0 WHEN 0 THEN 0 WHEN -1 THEN 0 ELSE 1 END, " +
+                               "A.GroupID, " +
+                               "CASE G.PFP_DASHBOARD WHEN NULL THEN 0 WHEN 0 THEN 0 WHEN -1 THEN 0 ELSE 1 END, " +
+                               "A.GroupID, " +
+                               "CASE G.PRG_DASHBOARD WHEN NULL THEN 0 WHEN 0 THEN 0 WHEN -1 THEN 0 ELSE 1 END " +
+                               "FROM ASCN_Group_OBS A LEFT JOIN GRP_T019 G ON G.C_GRP = A.GroupID";
+            await _dbUtility.ExecuteQuery(insertSql);
+        }
     }
 }
