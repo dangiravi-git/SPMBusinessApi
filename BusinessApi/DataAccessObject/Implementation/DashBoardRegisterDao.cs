@@ -109,8 +109,8 @@ namespace BusinessApi.DataAccessObject.Implementation
         {
             try
             {
-                string sql;
-                sql = "SELECT CONVERT(VARCHAR, C_GRP) + '$G' AS C_UTEN, S_GRP_NOM AS S_NOM " +
+               
+                string sql = "SELECT CONVERT(VARCHAR, C_GRP) + '$G' AS C_UTEN, S_GRP_NOM AS S_NOM " +
                       " FROM GRP_T019 " +
                       "WHERE C_GRP IN (SELECT C_GRP FROM ASCN_GRP_AZD_T204 " +
                       "WHERE C_AZD = 2 AND C_GRP IN (SELECT C_GRP FROM ASCN_GRP_FUNZL_T018 WHERE C_FUNZL IN (" + funzlPermission + "))) " +
@@ -147,11 +147,7 @@ namespace BusinessApi.DataAccessObject.Implementation
             {
                 string sql = "SELECT DB_TYPE, db_id FROM TAB_PUBLISH_DASHBOARDS WHERE DB_CODE = '" + item + "'";
                 var result = await _dbUtility.ExecuteQuery(sql);
-                if (result.Rows.Count > 0)
-                {
-                    return result.Rows[0];
-                }
-                return null;
+                return result.Rows.Count > 0 ? result.Rows[0] : null;
             }
             catch (Exception ex)
             {
@@ -179,116 +175,231 @@ namespace BusinessApi.DataAccessObject.Implementation
         }
         public async Task updatethedata(string groups, string checkColName, string colName, string grpColName)
         {
-            if (groups != null)
+            try
             {
-                string updateSql1 = $"UPDATE GRP_T019 SET {colName} = -1 WHERE C_GRP IN ({groups})";
-                string updateSql2 = $"UPDATE ASCN_GROUP_USER_DASHBOARD SET {checkColName} = -1 WHERE {grpColName} IN ({groups})";
-
-                await _dbUtility.ExecuteQuery(updateSql1);
-                await _dbUtility.ExecuteQuery(updateSql2);
+                string updateSql = $"UPDATE GRP_T019 SET {colName} = -1 WHERE C_GRP IN ({groups}); ";
+                updateSql += $"UPDATE ASCN_GROUP_USER_DASHBOARD SET {checkColName} = -1 WHERE {grpColName} IN ({groups}); ";
+                await _dbUtility.ExecuteQuery(updateSql);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                throw;
             }
         }
+
         public async Task<DataTable> deletethedata(object v, string item)
         {
-            string deleteSql1 = $"DELETE FROM ASCN_PUB_LAYOUT_DASHBOARDS WHERE DB_ID = {v}";
-            await _dbUtility.ExecuteQuery(deleteSql1);
+            try
+            {
+                string deleteSql = $"DELETE FROM ASCN_PUB_LAYOUT_DASHBOARDS WHERE DB_ID = {v}; ";
+                deleteSql += $"DELETE FROM tab_publish_dashboards WHERE DB_CODE = '{item.Trim()}'";
 
-            string deleteSql2 = $"DELETE FROM tab_publish_dashboards WHERE DB_CODE = '{item.Trim()}'";
-            DataTable dataTable = await _dbUtility.ExecuteQuery(deleteSql2);
-             return dataTable;
+                DataTable dataTable = await _dbUtility.ExecuteQuery(deleteSql);
+                return dataTable;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                throw;
+            }
         }
+
         public async Task<DataTable> GetLayoutData(string selectedValue)
         {
-            string sql = "select P_LAYOUT_ID as ID, LAYOUT_NAME + ' - ' + Revision as des from TAB_PUBLISH_LAYOUTS where LAYOUT_TYPE = '" + selectedValue + "'";
-            DataTable dataTable = await _dbUtility.ExecuteQuery(sql);
-            return dataTable;
+            try
+            {
+                string sql = "select P_LAYOUT_ID as ID, LAYOUT_NAME + ' - ' + Revision as des from TAB_PUBLISH_LAYOUTS where LAYOUT_TYPE = '" + selectedValue + "'";
+                DataTable dataTable = await _dbUtility.ExecuteQuery(sql);
+                return dataTable;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                throw;
+            }
         }
+
         public async Task<DataTable> GetWidgetData(string selectedValue, int dashboardType)
         {
-            string dtWidgetsSql = "select distinct L.P_LAYOUT_ID, layout_name, M.WIDGET_ID, WIDGET_NAME" +
-                                  " from TAB_PUBLISH_LAYOUTS L join TAB_MAPPING_PUBLISH_LAYOUTS M on L.P_LAYOUT_ID = M.P_LAYOUT_ID " +
-                                  " left join tab_gen_widgets W on W.WIDGET_ID = M.WIDGET_ID and L.LAYOUT_TYPE = '" + selectedValue + "'" +
-                                  " and w.widget_type = " + dashboardType;
-            DataTable dataTable = await _dbUtility.ExecuteQuery(dtWidgetsSql);
-            return dataTable;
+            try
+            {
+                string dtWidgetsSql = "select distinct L.P_LAYOUT_ID, layout_name, M.WIDGET_ID, WIDGET_NAME" +
+                                      " from TAB_PUBLISH_LAYOUTS L join TAB_MAPPING_PUBLISH_LAYOUTS M on L.P_LAYOUT_ID = M.P_LAYOUT_ID " +
+                                      " left join tab_gen_widgets W on W.WIDGET_ID = M.WIDGET_ID and L.LAYOUT_TYPE = '" + selectedValue + "'" +
+                                      " and w.widget_type = " + dashboardType;
+                DataTable dataTable = await _dbUtility.ExecuteQuery(dtWidgetsSql);
+                return dataTable;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                throw;
+            }
         }
+
         public async Task<DataTable> GetMenuList()
         {
-            string dtMenuSql = "select id,F_ID,MENU_NAME from BPM_MENU where C_AZD = 2";
-            DataTable dataTable = await _dbUtility.ExecuteQuery(dtMenuSql);
-            return dataTable;
+            try
+            {
+                string dtMenuSql = "select id, F_ID, MENU_NAME from BPM_MENU where C_AZD = 2";
+                DataTable dataTable = await _dbUtility.ExecuteQuery(dtMenuSql);
+                return dataTable;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                throw;
+            }
         }
+
         public async Task<DataTable> GetSelectedLayoutData(string layoutType, Int64 Id)
         {
-            StringBuilder sql = new StringBuilder();
-            sql.AppendLine("SELECT t.p_layout_id AS id, ");
-            sql.AppendLine("layout_name + ' - ' + revision AS des ");
-            sql.AppendLine("FROM tab_publish_layouts t ");
-            sql.AppendLine("INNER JOIN ascn_pub_layout_dashboards a ");
-            sql.AppendLine("ON t.p_layout_id = a.p_layout_id ");
-            sql.AppendLine("AND LAYOUT_TYPE = '" + layoutType + "' and db_id = " + Id);
-            sql.AppendLine(" ORDER BY a.layout_seq ");
-            DataTable dataTable = await _dbUtility.ExecuteQuery(sql.ToString());
-            return dataTable;
+            try
+            {
+                StringBuilder sql = new StringBuilder();
+                sql.AppendLine("SELECT t.p_layout_id AS id, ");
+                sql.AppendLine("layout_name + ' - ' + revision AS des ");
+                sql.AppendLine("FROM tab_publish_layouts t ");
+                sql.AppendLine("INNER JOIN ascn_pub_layout_dashboards a ");
+                sql.AppendLine("ON t.p_layout_id = a.p_layout_id ");
+                sql.AppendLine("AND LAYOUT_TYPE = '" + layoutType + "' and db_id = " + Id);
+                sql.AppendLine(" ORDER BY a.layout_seq ");
+                DataTable dataTable = await _dbUtility.ExecuteQuery(sql.ToString());
+                return dataTable;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                throw;
+            }
         }
+
         public async Task<DataRow> GetDataRowByID(Int64 ID)
         {
-            string sql = $"SELECT UPPER(DB_TYPE),DB_CODE,DB_DESCRIPTION FROM TAB_PUBLISH_DASHBOARDS WHERE DB_ID = {ID}";
-            var result = await _dbUtility.ExecuteQuery(sql);
-            if (result.Rows.Count > 0)
+            try
             {
-                return result.Rows[0];
+                string sql = $"SELECT UPPER(DB_TYPE), DB_CODE, DB_DESCRIPTION FROM TAB_PUBLISH_DASHBOARDS WHERE DB_ID = {ID}";
+                var result = await _dbUtility.ExecuteQuery(sql);
+                return  result.Rows[0] ;
             }
-
-            return null;
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                throw;
+            }
         }
+
         public async Task RestAllAssociation(string dashboardId, string dashboardType)
         {
-            string sql = "UPDATE grp_t019 SET " + dashboardType + "_DASHBOARD = -1 WHERE " + dashboardType + "_DASHBOARD = " + dashboardId;
-            await _dbUtility.ExecuteQuery(sql);
+            try
+            {
+                string sql = "UPDATE grp_t019 SET " + dashboardType + "_DASHBOARD = -1 WHERE " + dashboardType + "_DASHBOARD = " + dashboardId;
+                await _dbUtility.ExecuteQuery(sql);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                throw;
+            }
         }
+
         public async Task UpdateAssociationData(string dashboardId, string dashboardType, string c_grp)
         {
-            string sql = $"UPDATE grp_t019 SET {dashboardType}_DASHBOARD = {dashboardId} WHERE c_grp = {c_grp}";
-            await _dbUtility.ExecuteQuery(sql);
-        } 
+            try
+            {
+                string sql = $"UPDATE grp_t019 SET {dashboardType}_DASHBOARD = {dashboardId} WHERE c_grp = {c_grp}";
+                await _dbUtility.ExecuteQuery(sql);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                throw;
+            }
+        }
+
         public async Task DeleteFromGrpUserDashboard()
         {
-            string deleteSql = "DELETE FROM ASCN_GROUP_USER_DASHBOARD";
-            await _dbUtility.ExecuteQuery(deleteSql);
+            try
+            {
+                string deleteSql = "DELETE FROM ASCN_GROUP_USER_DASHBOARD";
+                await _dbUtility.ExecuteQuery(deleteSql);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                throw;
+            }
         }
+
         public async Task InsertIntoGrpUserDashboard()
         {
-            string insertSql = "INSERT INTO ASCN_GROUP_USER_DASHBOARD " +
-                               "SELECT DISTINCT A.C_UTEN, A.GroupID, " +
-                               "CASE G.PHP_DASHBOARD WHEN NULL THEN 0 WHEN 0 THEN 0 WHEN -1 THEN 0 ELSE 1 END, " +
-                               "A.GroupID, " +
-                               "CASE G.HP_DASHBOARD WHEN NULL THEN 0 WHEN 0 THEN 0 WHEN -1 THEN 0 ELSE 1 END, " +
-                               "A.P_ELMNT, A.GroupID, " +
-                               "CASE G.SP_DASHBOARD WHEN NULL THEN 0 WHEN 0 THEN 0 WHEN -1 THEN 0 ELSE 1 END, " +
-                               "A.GroupID, " +
-                               "CASE G.PFP_DASHBOARD WHEN NULL THEN 0 WHEN 0 THEN 0 WHEN -1 THEN 0 ELSE 1 END, " +
-                               "A.GroupID, " +
-                               "CASE G.PRG_DASHBOARD WHEN NULL THEN 0 WHEN 0 THEN 0 WHEN -1 THEN 0 ELSE 1 END " +
-                               "FROM ASCN_Group_OBS A LEFT JOIN GRP_T019 G ON G.C_GRP = A.GroupID";
-            await _dbUtility.ExecuteQuery(insertSql);
+            try
+            {
+                string insertSql = "INSERT INTO ASCN_GROUP_USER_DASHBOARD " +
+                                   "SELECT DISTINCT A.C_UTEN, A.GroupID, " +
+                                   "CASE G.PHP_DASHBOARD WHEN NULL THEN 0 WHEN 0 THEN 0 WHEN -1 THEN 0 ELSE 1 END, " +
+                                   "A.GroupID, " +
+                                   "CASE G.HP_DASHBOARD WHEN NULL THEN 0 WHEN 0 THEN 0 WHEN -1 THEN 0 ELSE 1 END, " +
+                                   "A.P_ELMNT, A.GroupID, " +
+                                   "CASE G.SP_DASHBOARD WHEN NULL THEN 0 WHEN 0 THEN 0 WHEN -1 THEN 0 ELSE 1 END, " +
+                                   "A.GroupID, " +
+                                   "CASE G.PFP_DASHBOARD WHEN NULL THEN 0 WHEN 0 THEN 0 WHEN -1 THEN 0 ELSE 1 END, " +
+                                   "A.GroupID, " +
+                                   "CASE G.PRG_DASHBOARD WHEN NULL THEN 0 WHEN 0 THEN 0 WHEN -1 THEN 0 ELSE 1 END " +
+                                   "FROM ASCN_Group_OBS A LEFT JOIN GRP_T019 G ON G.C_GRP = A.GroupID";
+                await _dbUtility.ExecuteQuery(insertSql);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                throw;
+            }
         }
+
         public async Task UpdateDescription(string Description, string DashboardId)
         {
-            string descriptionParam = await _dbUtility.QS(Description, true);
-            string sql = $"UPDATE TAB_PUBLISH_DASHBOARDS SET [DB_DESCRIPTION] = {descriptionParam} WHERE DB_ID = {DashboardId}";
-            await _dbUtility.ExecuteQuery(sql);
+            try
+            {
+                string descriptionParam = await _dbUtility.QS(Description, true);
+                string sql = $"UPDATE TAB_PUBLISH_DASHBOARDS SET [DB_DESCRIPTION] = {descriptionParam} WHERE DB_ID = {DashboardId}";
+                await _dbUtility.ExecuteQuery(sql);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                throw;
+            }
         }
+
         public async Task DeleteLayoutDashboard(string DashboardId)
         {
-            string sql = $"DELETE FROM ASCN_PUB_LAYOUT_DASHBOARDS WHERE DB_ID = {DashboardId}";
-            await _dbUtility.ExecuteQuery(sql);
+            try
+            {
+                string sql = $"DELETE FROM ASCN_PUB_LAYOUT_DASHBOARDS WHERE DB_ID = {DashboardId}";
+                await _dbUtility.ExecuteQuery(sql);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                throw;
+            }
         }
+
         public async Task InsertIntoDashboard(string DashboardId, string itm, int i)
         {
-            string sql = $"INSERT INTO ASCN_PUB_LAYOUT_DASHBOARDS (DB_ID, P_LAYOUT_ID, LAYOUT_SEQ) VALUES ({DashboardId}, {itm}, {i})";
-            await _dbUtility.ExecuteQuery(sql);
+            try
+            {
+                string sql = $"INSERT INTO ASCN_PUB_LAYOUT_DASHBOARDS (DB_ID, P_LAYOUT_ID, LAYOUT_SEQ) VALUES ({DashboardId}, {itm}, {i})";
+                await _dbUtility.ExecuteQuery(sql);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                throw;
+            }
         }
+
 
     }
 }

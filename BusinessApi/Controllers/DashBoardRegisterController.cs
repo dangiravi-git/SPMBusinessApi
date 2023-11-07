@@ -28,7 +28,7 @@ namespace BusinessApi.Controllers
             {
                 _logger.LogError(ex.Message);
             }
-        
+
         }
         [HttpGet]
         public async Task<ActionResult<ApiResponse<DashBoardRegisterModel>>> GetDashBoardRegister()
@@ -41,10 +41,10 @@ namespace BusinessApi.Controllers
                 {
                     IsSuccess = true,
                     Message = "",
-                    Item  = dataList
+                    Item = dataList
                 };
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 response = new ApiResponse<List<DashBoardRegisterViewTypeViewModel>>
                 {
@@ -140,16 +140,28 @@ namespace BusinessApi.Controllers
         [HttpPost("DeleteRecords")]
         public async Task<IActionResult> DeleteRecords(string val)
         {
+            ApiResponse<string> response;
             try
             {
                 string resultMessage = await _repository.DeleteRecords(val);
-                return Content(resultMessage);
+                response = new ApiResponse<string>
+                {
+                    IsSuccess = true,
+                    Message = "",
+                    Item = resultMessage
+                };
             }
             catch (Exception ex)
             {
+                response = new ApiResponse<string>
+                {
+                    IsSuccess = false,
+                    Message = ex.Message,
+                    Item = null
+                };
                 _logger.LogError(ex.Message);
-                return Content("An error occurred: " + ex.Message);
             }
+            return Ok(response);
         }
 
 
@@ -205,35 +217,59 @@ namespace BusinessApi.Controllers
             }
             return Ok(response);
         }
-        
+
         [HttpPost("SaveDashboardAssociation")]
         public async Task<IActionResult> SaveDashboardAssociation([FromBody] Dashboardassociatedata dashboardDto)
         {
+            ApiResponse<string> response;
             try
             {
                 string resultMessage = await _repository.SaveDashboardAssociationData(dashboardDto.selectedval, dashboardDto.dashboardId, dashboardDto.dashboardType);
-                return Content(resultMessage);
+                response = new ApiResponse<string>
+                {
+                    IsSuccess = true,
+                    Message = "",
+                    Item = resultMessage
+                };
             }
             catch (Exception ex)
             {
+                response = new ApiResponse<string>
+                {
+                    IsSuccess = false,
+                    Message = ex.Message,
+                    Item = null
+                };
                 _logger.LogError(ex.Message);
-                return BadRequest($"An error occurred: {ex.Message}");
             }
+            return Ok(response);
         }
+
         [HttpPost("UpdateDashboardDataByID")]
         public async Task<IActionResult> UpdateDashboardDataByID([FromBody] Savedashboardthroughid dashboardDto)
         {
+            ApiResponse<string> response;
             try
             {
                 string resultMessage = await _repository.UpdateDashboardData(dashboardDto.DashboardId, dashboardDto.Values, dashboardDto.Description);
-                return Content(resultMessage);
+                response = new ApiResponse<string>
+                {
+                    IsSuccess = true,
+                    Message = "",
+                    Item = resultMessage
+                };
             }
             catch (Exception ex)
             {
+                response = new ApiResponse<string>
+                {
+                    IsSuccess = false,
+                    Message = ex.Message,
+                    Item = null
+                };
                 _logger.LogError(ex.Message);
-                return BadRequest($"An error occurred: {ex.Message}");
             }
+            return Ok(response);
         }
-
     }
 }
