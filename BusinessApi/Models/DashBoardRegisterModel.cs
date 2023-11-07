@@ -31,27 +31,36 @@
         public string? Name { get; set; }
     }
 
-    public class DashboardLayoutDto
-    {
-        public int LayoutId { get; set; }
-        public string LayoutName { get; set; }
-        public Int64 IsAvailable { get; set; }
-        public string layoutType { get; set; }
-        public List<WidgetDto> Widgets { get; set; }
+        public class DashboardLayoutDto
+        {
+            public int LayoutId { get; set; }
+            public string LayoutName { get; set; }
+            public Int64 IsAvailable { get; set; }
+            public string layoutType { get; set; }
+            public List<WidgetDto> Widgets { get; set; }
 
-    }
-    public class WidgetDto
-    {
-        public int WidgetId { get; set; }
-        public string WidgetName { get; set; }
+        }
+        public class WidgetDto
+        {
+            public int WidgetId { get; set; }
+            public string WidgetName { get; set; }
 
-    }
+        }
     public class Dashboardassociatedata
     {
         public string dashboardType { get; set; }
         public string selectedval { get; set; }
         public string dashboardId { get; set; }
 
+    }
+    public class Dashboardeditdata
+    {
+        public string dashboard_code { get; set; }
+        public string description { get; set; }
+        public string dashboard_type { get; set; }
+        public Int64 Id { get; set; }
+
+        public List<DashboardLayoutDto> data { get; set; }
     }
 
 }

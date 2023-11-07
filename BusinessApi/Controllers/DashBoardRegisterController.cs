@@ -161,26 +161,26 @@ namespace BusinessApi.Controllers
             return Ok(response);
         }
         [HttpGet("EditLayoutsWidgetAssociation")]
-        public async Task<ActionResult<ApiResponse<DashboardLayoutDto>>> EditLayoutsWidgetAssociation(Int64 Id)
+        public async Task<ActionResult<ApiResponse<Dashboardeditdata>>> EditLayoutsWidgetAssociation(Int64 Id)
         {
-            ApiResponse<List<DashboardLayoutDto>> response;
+            ApiResponse<List<Dashboardeditdata>> response;
             try
             {
-                List<DashboardLayoutDto> dataList = await _repository.EditLayoutsWidgetAssociation(Id);
-                response = new ApiResponse<List<DashboardLayoutDto>>
+                List<Dashboardeditdata> dataList = await _repository.EditLayoutsWidgetAssociation(Id);
+                response = new ApiResponse<List<Dashboardeditdata>>
                 {
                     IsSuccess = true,
                     Message = "",
-                    Item = dataList
+                    Item = dataList,
                 };
             }
             catch (Exception ex)
             {
-                response = new ApiResponse<List<DashboardLayoutDto>>
+                response = new ApiResponse<List<Dashboardeditdata>>
                 {
                     IsSuccess = false,
                     Message = ex.Message,
-                    Item = new List<DashboardLayoutDto>()
+                    Item = new List<Dashboardeditdata>(),
                 };
             }
             return Ok(response);

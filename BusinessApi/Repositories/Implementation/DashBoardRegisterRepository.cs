@@ -4,6 +4,7 @@ using BusinessApi.Repositories.Interface;
 using BusinessApi.Utils;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Net;
 using System.Resources;
@@ -300,9 +301,18 @@ namespace BusinessApi.Repositories.Implementation
         {
             return await GetDashboardLayouts(selectedValue);
         }
-        public async Task<List<DashboardLayoutDto>> EditLayoutsWidgetAssociation(Int64 Id)
+        public async Task<List<Dashboardeditdata>> EditLayoutsWidgetAssociation(Int64 Id)
         {
             DataRow resultRow = await _projectListDao.GetDataRowByID(Id);
+            string dashboard_type = null;
+            string dashboard_code = null;
+            string description = null;
+            if (resultRow != null)
+            {
+                dashboard_type = resultRow[0].ToString();
+                dashboard_code = resultRow[1].ToString();
+                description = resultRow[2].ToString();
+            }
             string selectedValue = resultRow?.Field<string>(0) ?? string.Empty;
             int dashboardType = GetDashboardType(selectedValue);
             DataTable listforlayout = await _projectListDao.GetLayoutData(selectedValue);
@@ -310,22 +320,41 @@ namespace BusinessApi.Repositories.Implementation
             DataTable dtMenu = await _projectListDao.GetMenuList();
             listforwidget = UpdateWidgetDataWithMenu(listforwidget, dtMenu);
             DataTable dtselecteddata = await _projectListDao.GetSelectedLayoutData(selectedValue, Id);
-            if (dtselecteddata.Rows.Count > 1 && listforlayout.Rows.Count > 1)
+            if (dtselecteddata.Rows.Count > 0 && listforlayout.Rows.Count > 1)
             {
-                List<int> selectedLayoutIds = dtselecteddata.AsEnumerable()
-                    .Select(row => Convert.ToInt32(row.Field<int>("id")))
+                if(dtselecteddata.Rows.Count != listforlayout.Rows.Count){
+                    List<int> selectedLayoutIds = dtselecteddata.AsEnumerable()
+                    .Select(row => Convert.ToInt32(row.Field<Int64>("id")))
                     .ToList();
 
-                listforlayout = listforlayout.AsEnumerable()
-                   .Where(row => !selectedLayoutIds.Contains(Convert.ToInt32(row["ID"])))
-                   .CopyToDataTable();
+                    listforlayout = listforlayout.AsEnumerable()
+                       .Where(row => !selectedLayoutIds.Contains(Convert.ToInt32(row["ID"])))
+                       .CopyToDataTable();
+                }
+               
             }
             Dictionary<int, List<WidgetDto>> widgetsByLayoutId = ExtractWidgetsByLayoutId(listforwidget);
-            List<DashboardLayoutDto> dashboardLayouts = BuildDashboardLayouts(listforlayout, widgetsByLayoutId, 1, "A");
-            List<DashboardLayoutDto> dashboardLayoutsselcted = BuildDashboardLayouts(dtselecteddata, widgetsByLayoutId, 0,"S");
-            List<DashboardLayoutDto> mergedDashboardLayouts = dashboardLayouts.Concat(dashboardLayoutsselcted).ToList();
+            List<Dashboardeditdata> dashboardEditDataList = new List<Dashboardeditdata>();
+            List<DashboardLayoutDto> layouts = new List<DashboardLayoutDto>();
+            List<DashboardLayoutDto> layoutselected = new List<DashboardLayoutDto>();
+            List<DashboardLayoutDto> Mergelayout = new List<DashboardLayoutDto>();
+            if (dtselecteddata.Rows.Count != listforlayout.Rows.Count)
+            {
+                layouts = BuildDashboardLayouts(listforlayout, widgetsByLayoutId, 1, "A");
+            }
+            layoutselected = BuildDashboardLayouts(dtselecteddata, widgetsByLayoutId, 0,"S");
+            Mergelayout = layouts.Concat(layoutselected).ToList();
+            Dashboardeditdata dashboardEditData = new Dashboardeditdata
+            {
 
-            return mergedDashboardLayouts;
+                Id = Id,
+                dashboard_type = dashboard_type,
+                dashboard_code = dashboard_code,
+                description = description,
+                data = Mergelayout
+            };
+            dashboardEditDataList.Add(dashboardEditData);
+            return dashboardEditDataList;
         }
         private async Task<List<DashboardLayoutDto>> GetDashboardLayouts(string selectedValue)
         {
@@ -457,5 +486,6 @@ namespace BusinessApi.Repositories.Implementation
             var msg = "Data saved successfully";
             return msg;
         }
+
     }
 }

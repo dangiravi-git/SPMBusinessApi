@@ -151,7 +151,7 @@ namespace BusinessApi.DataAccessObject.Implementation
         }
         public async Task<DataRow> GetDataRowByID(Int64 ID)
         {
-            string sql = $"SELECT UPPER(DB_TYPE) FROM TAB_PUBLISH_DASHBOARDS WHERE DB_ID = {ID}";
+            string sql = $"SELECT UPPER(DB_TYPE),DB_CODE,DB_DESCRIPTION FROM TAB_PUBLISH_DASHBOARDS WHERE DB_ID = {ID}";
             var result = await _dbUtility.ExecuteQuery(sql);
             if (result.Rows.Count > 0)
             {
