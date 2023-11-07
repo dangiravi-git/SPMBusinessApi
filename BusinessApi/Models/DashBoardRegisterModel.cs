@@ -36,7 +36,7 @@
             public int LayoutId { get; set; }
             public string LayoutName { get; set; }
             public Int64 IsAvailable { get; set; }
-            public string layoutType { get; set; }
+            public string LayoutType { get; set; }
             public List<WidgetDto> Widgets { get; set; }
 
         }
@@ -55,12 +55,12 @@
     }
     public class Dashboardeditdata
     {
-        public string dashboard_code { get; set; }
-        public string description { get; set; }
-        public string dashboard_type { get; set; }
+        public string DashboardCode { get; set; }
+        public string Description { get; set; }
+        public string DashboardType { get; set; }
         public Int64 Id { get; set; }                   
 
-        public List<DashboardLayoutDto> data { get; set; }
+        public List<DashboardLayoutDto> Data { get; set; }
     }
 
     public class SaveDashboard

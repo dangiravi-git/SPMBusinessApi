@@ -598,7 +598,7 @@ namespace BusinessApi.Repositories.Implementation
                         LayoutId = layoutId,
                         LayoutName = layoutName,
                         IsAvailable = IsAvailable,
-                        layoutType = layoutType,
+                        LayoutType = layoutType,
                         Widgets = widgetsByLayoutId.ContainsKey(layoutId) ? widgetsByLayoutId[layoutId] : new List<WidgetDto>()
                     };
 
@@ -720,10 +720,10 @@ namespace BusinessApi.Repositories.Implementation
                 return new Dashboardeditdata
                 {
                     Id = id,
-                    dashboard_type = dashboard_type,
-                    dashboard_code = dashboard_code,
-                    description = description,
-                    data = data
+                    DashboardType = dashboard_type,
+                    DashboardCode = dashboard_code,
+                    Description = description,
+                    Data = data
                 };
             }
             catch (Exception ex)
