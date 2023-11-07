@@ -3,9 +3,17 @@ using BusinessApi.DataAccessObject.Interface;
 using BusinessApi.Repositories.Implementation;
 using BusinessApi.Repositories.Interface;
 using BusinessApi.Utils;
-using Microsoft.IdentityModel.Tokens;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+var logger = new LoggerConfiguration()
+    .ReadFrom.Configuration(builder.Configuration)
+    .Enrich.FromLogContext()
+    .CreateLogger();
+
+builder.Logging.ClearProviders();
+builder.Logging.AddSerilog(logger);
 
 builder.Services.AddScoped<IDashBoardRegisterRepository, DashBoardRegisterRepository>();
 builder.Services.AddScoped<IDashBoardRegisterDao, DashBoardRegisterDao>(); 
@@ -37,12 +45,13 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
 app.MapControllers();
 
-
 app.Run();
+
+
+

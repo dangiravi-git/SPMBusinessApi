@@ -5,6 +5,8 @@ using BusinessApi.Utils.Response;
 using Microsoft.AspNetCore.Mvc;
 using System.Data;
 using System.Text;
+using Serilog;
+//using ILogger = Serilog.ILogger;
 
 namespace BusinessApi.Controllers
 {
@@ -13,9 +15,20 @@ namespace BusinessApi.Controllers
     public class DashBoardRegisterController : ControllerBase
     {
         private readonly IDashBoardRegisterRepository _repository;
-        public DashBoardRegisterController(IDashBoardRegisterRepository repository)
+        private readonly ILogger<DashBoardRegisterController> _logger;
+        public DashBoardRegisterController(IDashBoardRegisterRepository repository, ILogger<DashBoardRegisterController> logger)
         {
-            _repository = repository;
+            try
+            {
+                _logger = logger;
+                _repository = repository;
+                _logger.LogInformation($"Initiate {nameof(DashBoardRegisterController)}");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+            }
+        
         }
         [HttpGet]
         public async Task<ActionResult<ApiResponse<DashBoardRegisterModel>>> GetDashBoardRegister()
