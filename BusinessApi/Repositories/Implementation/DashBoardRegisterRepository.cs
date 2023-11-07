@@ -653,7 +653,7 @@ namespace BusinessApi.Repositories.Implementation
             try
             {
                 await _projectListDao.UpdateDescription(Description, DashboardId);
-                string valuesAsString = string.Join(",", Values.Select(item => item.Id));
+                string valuesAsString = string.Join(",", Values.Select(item => item.LayoutId));
 
                 if (!string.IsNullOrEmpty(valuesAsString))
                 {

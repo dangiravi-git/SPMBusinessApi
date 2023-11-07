@@ -66,11 +66,11 @@
     public class SaveDashboard
     {
         public Int64 DashboardId { get; set; }
-        public List<MutipleIds> Values { get; set; }
+        public List<MutipleIds> DashboardLayoutAssoList { get; set; }
         public string Description { get; set; }
     }
     public class MutipleIds {
-        public Int64 Id { get; set; }
+        public Int64 LayoutId { get; set; }
     }
 
 }

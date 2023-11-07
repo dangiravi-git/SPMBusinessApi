@@ -251,7 +251,7 @@ namespace BusinessApi.Controllers
             ApiResponse<string> response;
             try
             {
-                string resultMessage = await _repository.UpdateDashboardData(dashboardDto.DashboardId, dashboardDto.Values, dashboardDto.Description);
+                string resultMessage = await _repository.UpdateDashboardData(dashboardDto.DashboardId, dashboardDto.DashboardLayoutAssoList, dashboardDto.Description);
                 response = new ApiResponse<string>
                 {
                     IsSuccess = true,
