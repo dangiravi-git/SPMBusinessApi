@@ -136,5 +136,77 @@ namespace BusinessApi.DataAccessObject.Implementation
             DataTable dataTable = await _dbUtility.ExecuteQuery(dtMenuSql);
             return dataTable;
         }
+        public async Task<DataTable> GetSelectedLayoutData(string layoutType, Int64 Id)
+        {
+            StringBuilder sql = new StringBuilder();
+            sql.AppendLine("SELECT t.p_layout_id AS id, ");
+            sql.AppendLine("layout_name + ' - ' + revision AS des ");
+            sql.AppendLine("FROM tab_publish_layouts t ");
+            sql.AppendLine("INNER JOIN ascn_pub_layout_dashboards a ");
+            sql.AppendLine("ON t.p_layout_id = a.p_layout_id ");
+            sql.AppendLine("AND LAYOUT_TYPE = '" + layoutType + "' and db_id = " + Id);
+            sql.AppendLine(" ORDER BY a.layout_seq ");
+            DataTable dataTable = await _dbUtility.ExecuteQuery(sql.ToString());
+            return dataTable;
+        }
+        public async Task<DataRow> GetDataRowByID(Int64 ID)
+        {
+            string sql = $"SELECT UPPER(DB_TYPE),DB_CODE,DB_DESCRIPTION FROM TAB_PUBLISH_DASHBOARDS WHERE DB_ID = {ID}";
+            var result = await _dbUtility.ExecuteQuery(sql);
+            if (result.Rows.Count > 0)
+            {
+                return result.Rows[0];
+            }
+
+            return null;
+        }
+        public async Task RestAllAssociation(string dashboardId, string dashboardType)
+        {
+            string sql = "UPDATE grp_t019 SET " + dashboardType + "_DASHBOARD = -1 WHERE " + dashboardType + "_DASHBOARD = " + dashboardId;
+            await _dbUtility.ExecuteQuery(sql);
+        }
+        public async Task UpdateAssociationData(string dashboardId, string dashboardType, string c_grp)
+        {
+            string sql = $"UPDATE grp_t019 SET {dashboardType}_DASHBOARD = {dashboardId} WHERE c_grp = {c_grp}";
+            await _dbUtility.ExecuteQuery(sql);
+        } 
+        public async Task DeleteFromGrpUserDashboard()
+        {
+            string deleteSql = "DELETE FROM ASCN_GROUP_USER_DASHBOARD";
+            await _dbUtility.ExecuteQuery(deleteSql);
+        }
+        public async Task InsertIntoGrpUserDashboard()
+        {
+            string insertSql = "INSERT INTO ASCN_GROUP_USER_DASHBOARD " +
+                               "SELECT DISTINCT A.C_UTEN, A.GroupID, " +
+                               "CASE G.PHP_DASHBOARD WHEN NULL THEN 0 WHEN 0 THEN 0 WHEN -1 THEN 0 ELSE 1 END, " +
+                               "A.GroupID, " +
+                               "CASE G.HP_DASHBOARD WHEN NULL THEN 0 WHEN 0 THEN 0 WHEN -1 THEN 0 ELSE 1 END, " +
+                               "A.P_ELMNT, A.GroupID, " +
+                               "CASE G.SP_DASHBOARD WHEN NULL THEN 0 WHEN 0 THEN 0 WHEN -1 THEN 0 ELSE 1 END, " +
+                               "A.GroupID, " +
+                               "CASE G.PFP_DASHBOARD WHEN NULL THEN 0 WHEN 0 THEN 0 WHEN -1 THEN 0 ELSE 1 END, " +
+                               "A.GroupID, " +
+                               "CASE G.PRG_DASHBOARD WHEN NULL THEN 0 WHEN 0 THEN 0 WHEN -1 THEN 0 ELSE 1 END " +
+                               "FROM ASCN_Group_OBS A LEFT JOIN GRP_T019 G ON G.C_GRP = A.GroupID";
+            await _dbUtility.ExecuteQuery(insertSql);
+        }
+        public async Task UpdateDescription(string Description, string DashboardId)
+        {
+            string descriptionParam = await _dbUtility.QS(Description, true);
+            string sql = $"UPDATE TAB_PUBLISH_DASHBOARDS SET [DB_DESCRIPTION] = {descriptionParam} WHERE DB_ID = {DashboardId}";
+            await _dbUtility.ExecuteQuery(sql);
+        }
+        public async Task DeleteLayoutDashboard(string DashboardId)
+        {
+            string sql = $"DELETE FROM ASCN_PUB_LAYOUT_DASHBOARDS WHERE DB_ID = {DashboardId}";
+            await _dbUtility.ExecuteQuery(sql);
+        }
+        public async Task InsertIntoDashboard(string DashboardId, string itm, int i)
+        {
+            string sql = $"INSERT INTO ASCN_PUB_LAYOUT_DASHBOARDS (DB_ID, P_LAYOUT_ID, LAYOUT_SEQ) VALUES ({DashboardId}, {itm}, {i})";
+            await _dbUtility.ExecuteQuery(sql);
+        }
+
     }
 }

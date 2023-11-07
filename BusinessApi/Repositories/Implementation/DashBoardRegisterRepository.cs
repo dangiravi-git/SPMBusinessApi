@@ -4,6 +4,7 @@ using BusinessApi.Repositories.Interface;
 using BusinessApi.Utils;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Net;
 using System.Resources;
@@ -298,19 +299,74 @@ namespace BusinessApi.Repositories.Implementation
         }
         public async Task<List<DashboardLayoutDto>> GetLayoutsWidgetAssociation(string selectedValue)
         {
+            return await GetDashboardLayouts(selectedValue);
+        }
+        public async Task<List<Dashboardeditdata>> EditLayoutsWidgetAssociation(Int64 Id)
+        {
+            DataRow resultRow = await _projectListDao.GetDataRowByID(Id);
+            string dashboard_type = null;
+            string dashboard_code = null;
+            string description = null;
+            if (resultRow != null)
+            {
+                dashboard_type = resultRow[0].ToString();
+                dashboard_code = resultRow[1].ToString();
+                description = resultRow[2].ToString();
+            }
+            string selectedValue = resultRow?.Field<string>(0) ?? string.Empty;
             int dashboardType = GetDashboardType(selectedValue);
-            DataTable listforlayout = null;
-            DataTable listforwidget = null;
-            DataTable dtMenu  = null;
-            listforlayout = await _projectListDao.GetLayoutData(selectedValue);
-            listforwidget = await _projectListDao.GetWidgetData(selectedValue, dashboardType);
-            dtMenu = await _projectListDao.GetMenuList();
+            DataTable listforlayout = await _projectListDao.GetLayoutData(selectedValue);
+            DataTable listforwidget = await _projectListDao.GetWidgetData(selectedValue, dashboardType);
+            DataTable dtMenu = await _projectListDao.GetMenuList();
             listforwidget = UpdateWidgetDataWithMenu(listforwidget, dtMenu);
+            DataTable dtselecteddata = await _projectListDao.GetSelectedLayoutData(selectedValue, Id);
+            if (dtselecteddata.Rows.Count > 0 && listforlayout.Rows.Count > 1)
+            {
+                if(dtselecteddata.Rows.Count != listforlayout.Rows.Count){
+                    List<int> selectedLayoutIds = dtselecteddata.AsEnumerable()
+                    .Select(row => Convert.ToInt32(row.Field<Int64>("id")))
+                    .ToList();
+
+                    listforlayout = listforlayout.AsEnumerable()
+                       .Where(row => !selectedLayoutIds.Contains(Convert.ToInt32(row["ID"])))
+                       .CopyToDataTable();
+                }
+               
+            }
+            Dictionary<int, List<WidgetDto>> widgetsByLayoutId = ExtractWidgetsByLayoutId(listforwidget);
+            List<Dashboardeditdata> dashboardEditDataList = new List<Dashboardeditdata>();
+            List<DashboardLayoutDto> layouts = new List<DashboardLayoutDto>();
+            List<DashboardLayoutDto> layoutselected = new List<DashboardLayoutDto>();
+            List<DashboardLayoutDto> Mergelayout = new List<DashboardLayoutDto>();
+            if (dtselecteddata.Rows.Count != listforlayout.Rows.Count)
+            {
+                layouts = BuildDashboardLayouts(listforlayout, widgetsByLayoutId, 1, "A");
+            }
+            layoutselected = BuildDashboardLayouts(dtselecteddata, widgetsByLayoutId, 0,"S");
+            Mergelayout = layouts.Concat(layoutselected).ToList();
+            Dashboardeditdata dashboardEditData = new Dashboardeditdata
+            {
+
+                Id = Id,
+                dashboard_type = dashboard_type,
+                dashboard_code = dashboard_code,
+                description = description,
+                data = Mergelayout
+            };
+            dashboardEditDataList.Add(dashboardEditData);
+            return dashboardEditDataList;
+        }
+        private async Task<List<DashboardLayoutDto>> GetDashboardLayouts(string selectedValue)
+        {
+            int dashboardType = GetDashboardType(selectedValue);
+            DataTable listforlayout = await _projectListDao.GetLayoutData(selectedValue);
+            DataTable listforwidget = await _projectListDao.GetWidgetData(selectedValue, dashboardType);
+            DataTable dtMenu = await _projectListDao.GetMenuList();
+            listforwidget = UpdateWidgetDataWithMenu(listforwidget, dtMenu);
+
             Dictionary<int, List<WidgetDto>> widgetsByLayoutId = ExtractWidgetsByLayoutId(listforwidget);
 
-            List<DashboardLayoutDto> dashboardLayouts = BuildDashboardLayouts(listforlayout, widgetsByLayoutId);
-
-            return dashboardLayouts;
+            return BuildDashboardLayouts(listforlayout, widgetsByLayoutId, 1, "A");
         }
         public DataTable UpdateWidgetDataWithMenu(DataTable dtWidgets, DataTable dtMenu)
         {
@@ -383,7 +439,7 @@ namespace BusinessApi.Repositories.Implementation
             return widgetsByLayoutId;
         }
 
-        private List<DashboardLayoutDto> BuildDashboardLayouts(DataTable listforlayout, Dictionary<int, List<WidgetDto>> widgetsByLayoutId)
+        private List<DashboardLayoutDto> BuildDashboardLayouts(DataTable listforlayout, Dictionary<int, List<WidgetDto>> widgetsByLayoutId, Int64 IsAvailable, string layoutType)
         {
             List<DashboardLayoutDto> dashboardLayouts = new List<DashboardLayoutDto>();
             foreach (DataRow row in listforlayout.Rows)
@@ -395,7 +451,8 @@ namespace BusinessApi.Repositories.Implementation
                 {
                     LayoutId = layoutId,
                     LayoutName = layoutName,
-                    IsAvailable = 1,
+                    IsAvailable = IsAvailable,
+                    layoutType = layoutType,
                     Widgets = widgetsByLayoutId.ContainsKey(layoutId) ? widgetsByLayoutId[layoutId] : new List<WidgetDto>()
                 };
 
@@ -403,5 +460,56 @@ namespace BusinessApi.Repositories.Implementation
             }
             return dashboardLayouts;
         }
+        public async Task<string> SaveDashboardAssociationData(string selectedval, string dashboardId, string dashboardType)
+        {
+            string[] finalSelectedUsersRoleGroups;
+            var type = SetDashboardType(dashboardType);
+            finalSelectedUsersRoleGroups = selectedval.Split(",");
+            if (selectedval.ToString() != "")
+            {
+                await _projectListDao.RestAllAssociation(dashboardId, type);
+                foreach (string finalSelectedUsersRoleGroup in finalSelectedUsersRoleGroups)
+                {
+                    string[] userRoleGroupId = finalSelectedUsersRoleGroup.Split('$');
+                    if (userRoleGroupId.Length > 1 && userRoleGroupId[1] == "G")
+                    {
+                        await _projectListDao.UpdateAssociationData(dashboardId, type, userRoleGroupId[0]);
+                    }
+                }
+            }
+            else if (dashboardId != "" && finalSelectedUsersRoleGroups[0] == "")
+            {
+                await _projectListDao.RestAllAssociation(dashboardId, type);
+            }
+            await _projectListDao.DeleteFromGrpUserDashboard();
+            await _projectListDao.InsertIntoGrpUserDashboard();
+            var msg = "Data saved successfully";
+            return msg;
+        }
+        public async Task<string> UpdateDashboardData(string DashboardId, List<MutipleIds> Values, string Description)
+        {
+            
+            await _projectListDao.UpdateDescription(Description, DashboardId);
+            string valuesAsString = string.Join(",", Values.Select(item => item.Id));
+
+            if (!string.IsNullOrEmpty(valuesAsString))
+            {
+                await _projectListDao.DeleteLayoutDashboard(DashboardId);
+                int i = 0;
+                foreach (string itm in valuesAsString.Split(','))
+                {
+                    await _projectListDao.InsertIntoDashboard(DashboardId, itm, i);
+                    i++;
+                }
+            }
+            else
+            {
+                await _projectListDao.DeleteLayoutDashboard(DashboardId);
+            }
+            var msg = "Data Saved Succefully";
+            return msg;
+        }
+        
+
     }
 }

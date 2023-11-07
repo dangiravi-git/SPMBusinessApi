@@ -19,5 +19,14 @@ namespace BusinessApi.DataAccessObject.Interface
         Task<DataTable> GetLayoutData(string selectedValue);
         Task<DataTable> GetWidgetData(string selectedValue, int dashboardType);
         Task<DataTable> GetMenuList();
+        Task<DataTable> GetSelectedLayoutData(string layoutType, Int64 Id);
+        Task<DataRow> GetDataRowByID(Int64 ID);
+        Task RestAllAssociation(string dashboardId, string dashboardType);
+        Task UpdateAssociationData(string dashboardId, string dashboardType,string id);
+        Task DeleteFromGrpUserDashboard();
+        Task InsertIntoGrpUserDashboard();
+        Task UpdateDescription(string description, string editdashboardid);
+        Task DeleteLayoutDashboard(string DashboardId);
+        Task InsertIntoDashboard(string DashboardId, string itm, int i);
     }
 }
