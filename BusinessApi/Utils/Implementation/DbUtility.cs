@@ -62,5 +62,24 @@ namespace BusinessApi.Utils
                 return "NULL";
             }
         }
+        public async Task<string> QS(string s, bool allowEmptyString = false, bool includeEqual = false)
+        {
+            if (string.IsNullOrEmpty(s) || string.IsNullOrWhiteSpace(s))
+            {
+                if (allowEmptyString)
+                {
+                    return includeEqual ? "= ''" : "''";
+                }
+                else
+                {
+                    return includeEqual ? " IS NULL" : "NULL";
+                }
+            }
+            else
+            {
+                return includeEqual ? $"= '{s.Replace("'", "''").Replace("''''", "''")}'" : $"'{s.Replace("'", "''").Replace("''''", "''")}'";
+            }
+        }
+
     }
 }

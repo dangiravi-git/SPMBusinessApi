@@ -486,6 +486,30 @@ namespace BusinessApi.Repositories.Implementation
             var msg = "Data saved successfully";
             return msg;
         }
+        public async Task<string> UpdateDashboardData(string DashboardId, List<MutipleIds> Values, string Description)
+        {
+            
+            await _projectListDao.UpdateDescription(Description, DashboardId);
+            string valuesAsString = string.Join(",", Values.Select(item => item.Id));
+
+            if (!string.IsNullOrEmpty(valuesAsString))
+            {
+                await _projectListDao.DeleteLayoutDashboard(DashboardId);
+                int i = 0;
+                foreach (string itm in valuesAsString.Split(','))
+                {
+                    await _projectListDao.InsertIntoDashboard(DashboardId, itm, i);
+                    i++;
+                }
+            }
+            else
+            {
+                await _projectListDao.DeleteLayoutDashboard(DashboardId);
+            }
+            var msg = "Data Saved Succefully";
+            return msg;
+        }
+        
 
     }
 }

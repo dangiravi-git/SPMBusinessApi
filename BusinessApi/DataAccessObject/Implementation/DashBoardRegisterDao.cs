@@ -191,5 +191,22 @@ namespace BusinessApi.DataAccessObject.Implementation
                                "FROM ASCN_Group_OBS A LEFT JOIN GRP_T019 G ON G.C_GRP = A.GroupID";
             await _dbUtility.ExecuteQuery(insertSql);
         }
+        public async Task UpdateDescription(string Description, string DashboardId)
+        {
+            string descriptionParam = await _dbUtility.QS(Description, true);
+            string sql = $"UPDATE TAB_PUBLISH_DASHBOARDS SET [DB_DESCRIPTION] = {descriptionParam} WHERE DB_ID = {DashboardId}";
+            await _dbUtility.ExecuteQuery(sql);
+        }
+        public async Task DeleteLayoutDashboard(string DashboardId)
+        {
+            string sql = $"DELETE FROM ASCN_PUB_LAYOUT_DASHBOARDS WHERE DB_ID = {DashboardId}";
+            await _dbUtility.ExecuteQuery(sql);
+        }
+        public async Task InsertIntoDashboard(string DashboardId, string itm, int i)
+        {
+            string sql = $"INSERT INTO ASCN_PUB_LAYOUT_DASHBOARDS (DB_ID, P_LAYOUT_ID, LAYOUT_SEQ) VALUES ({DashboardId}, {itm}, {i})";
+            await _dbUtility.ExecuteQuery(sql);
+        }
+
     }
 }

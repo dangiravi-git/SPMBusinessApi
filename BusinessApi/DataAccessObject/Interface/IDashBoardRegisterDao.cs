@@ -25,5 +25,8 @@ namespace BusinessApi.DataAccessObject.Interface
         Task UpdateAssociationData(string dashboardId, string dashboardType,string id);
         Task DeleteFromGrpUserDashboard();
         Task InsertIntoGrpUserDashboard();
+        Task UpdateDescription(string description, string editdashboardid);
+        Task DeleteLayoutDashboard(string DashboardId);
+        Task InsertIntoDashboard(string DashboardId, string itm, int i);
     }
 }

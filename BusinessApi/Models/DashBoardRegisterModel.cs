@@ -46,7 +46,7 @@
             public string WidgetName { get; set; }
 
         }
-    public class Dashboardassociatedata
+    public class Dashboardassociatedata 
     {
         public string dashboardType { get; set; }
         public string selectedval { get; set; }
@@ -58,9 +58,18 @@
         public string dashboard_code { get; set; }
         public string description { get; set; }
         public string dashboard_type { get; set; }
-        public Int64 Id { get; set; }
+        public Int64 Id { get; set; }                   
 
         public List<DashboardLayoutDto> data { get; set; }
+    }
+
+    public class Savedashboardthroughid {
+        public string DashboardId { get; set; }
+        public List<MutipleIds> Values { get; set; }
+        public string Description { get; set; }
+    }
+    public class MutipleIds {
+        public string Id { get; set; }
     }
 
 }

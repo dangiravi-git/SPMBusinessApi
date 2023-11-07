@@ -199,6 +199,19 @@ namespace BusinessApi.Controllers
                 return BadRequest($"An error occurred: {ex.Message}");
             }
         }
+        [HttpPost("UpdateDashboardDataByID")]
+        public async Task<IActionResult> UpdateDashboardDataByID([FromBody] Savedashboardthroughid dashboardDto)
+        {
+            try
+            {
+                string resultMessage = await _repository.UpdateDashboardData(dashboardDto.DashboardId, dashboardDto.Values, dashboardDto.Description);
+                return Content(resultMessage);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"An error occurred: {ex.Message}");
+            }
+        }
 
     }
 }
