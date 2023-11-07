@@ -52,6 +52,7 @@ namespace BusinessApi.Controllers
                     Message = ex.Message,
                     Item = new List<DashBoardRegisterViewTypeViewModel>()
                 };
+                _logger.LogError(ex.Message);
             }
             return Ok(response);
         }
@@ -77,6 +78,7 @@ namespace BusinessApi.Controllers
                     Message = ex.Message,
                     Item = new DashboardDto()
                 };
+                _logger.LogError(ex.Message);
             }
             return Ok(response);
         }
@@ -104,6 +106,7 @@ namespace BusinessApi.Controllers
                     Message = ex.Message,
                     Item = new List<DashboardTypeModel>()
                 };
+                _logger.LogError(ex.Message);
             }
             return Ok(response);
         }
@@ -130,6 +133,7 @@ namespace BusinessApi.Controllers
                     Message = ex.Message,
                     Item = new List<DashboardTypeModel>()
                 };
+                _logger.LogError(ex.Message);
             }
             return Ok(response);
         }
@@ -143,6 +147,7 @@ namespace BusinessApi.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex.Message);
                 return Content("An error occurred: " + ex.Message);
             }
         }
@@ -170,6 +175,7 @@ namespace BusinessApi.Controllers
                     Message = ex.Message,
                     Item = new List<DashboardLayoutDto>()
                 };
+                _logger.LogError(ex.Message);
             }
             return Ok(response);
         }
@@ -195,6 +201,7 @@ namespace BusinessApi.Controllers
                     Message = ex.Message,
                     Item = new List<Dashboardeditdata>(),
                 };
+                _logger.LogError(ex.Message);
             }
             return Ok(response);
         }
@@ -209,6 +216,7 @@ namespace BusinessApi.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex.Message);
                 return BadRequest($"An error occurred: {ex.Message}");
             }
         }
@@ -222,6 +230,7 @@ namespace BusinessApi.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex.Message);
                 return BadRequest($"An error occurred: {ex.Message}");
             }
         }

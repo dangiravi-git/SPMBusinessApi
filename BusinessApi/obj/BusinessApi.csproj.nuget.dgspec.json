@@ -1,20 +1,27 @@
 {
   "format": 1,
   "restore": {
-    "E:\\spm angular api\\SPMBusinessApi\\BusinessApi\\BusinessApi.csproj": {}
+    "D:\\Applications\\SPM\\SPM_Angular\\SPMBusinessApi\\BusinessApi\\BusinessApi.csproj": {}
   },
   "projects": {
-    "E:\\spm angular api\\SPMBusinessApi\\BusinessApi\\BusinessApi.csproj": {
+    "D:\\Applications\\SPM\\SPM_Angular\\SPMBusinessApi\\BusinessApi\\BusinessApi.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "E:\\spm angular api\\SPMBusinessApi\\BusinessApi\\BusinessApi.csproj",
+        "projectUniqueName": "D:\\Applications\\SPM\\SPM_Angular\\SPMBusinessApi\\BusinessApi\\BusinessApi.csproj",
         "projectName": "BusinessApi",
-        "projectPath": "E:\\spm angular api\\SPMBusinessApi\\BusinessApi\\BusinessApi.csproj",
-        "packagesPath": "C:\\Users\\Uppwise\\.nuget\\packages\\",
-        "outputPath": "E:\\spm angular api\\SPMBusinessApi\\BusinessApi\\obj\\",
+        "projectPath": "D:\\Applications\\SPM\\SPM_Angular\\SPMBusinessApi\\BusinessApi\\BusinessApi.csproj",
+        "packagesPath": "C:\\Users\\POI\\.nuget\\packages\\",
+        "outputPath": "D:\\Applications\\SPM\\SPM_Angular\\SPMBusinessApi\\BusinessApi\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files\\DevExpress 23.1\\Components\\Offline Packages",
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages",
+          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+        ],
         "configFilePaths": [
-          "C:\\Users\\Uppwise\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\POI\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\DevExpress 23.1.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -22,8 +29,9 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\dotnet\\sdk\\7.0.304\\Sdks\\Microsoft.NET.Sdk.Web\\library-packs": {},
-          "https://api.nuget.org/v3/index.json": {}
+          "C:\\Program Files\\DevExpress 23.1\\Components\\System\\Components\\Packages": {},
+          "https://api.nuget.org/v3/index.json": {},
+          "https://projectobjects.pkgs.visualstudio.com/182358cf-e47f-4099-b92e-21c7f7b03997/_packaging/POPackages/nuget/v3/index.json": {}
         },
         "frameworks": {
           "net6.0": {
@@ -63,6 +71,18 @@
               "target": "Package",
               "version": "[7.0.13, )"
             },
+            "Serilog": {
+              "target": "Package",
+              "version": "[3.1.0-dev-02086, )"
+            },
+            "Serilog.AspNetCore": {
+              "target": "Package",
+              "version": "[7.0.1-dev-00320, )"
+            },
+            "Serilog.Sinks.File": {
+              "target": "Package",
+              "version": "[5.0.1-dev-00968, )"
+            },
             "Swashbuckle.AspNetCore": {
               "target": "Package",
               "version": "[6.5.0, )"
@@ -78,8 +98,7 @@
             "net47",
             "net471",
             "net472",
-            "net48",
-            "net481"
+            "net48"
           ],
           "assetTargetFallback": true,
           "warn": true,
@@ -91,7 +110,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.304\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.201\\RuntimeIdentifierGraph.json"
         }
       }
     }
