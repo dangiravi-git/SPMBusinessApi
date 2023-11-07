@@ -246,7 +246,7 @@ namespace BusinessApi.Controllers
         }
 
         [HttpPost("UpdateDashboardDataByID")]
-        public async Task<IActionResult> UpdateDashboardDataByID([FromBody] Savedashboardthroughid dashboardDto)
+        public async Task<IActionResult> UpdateDashboardDataByID([FromBody] SaveDashboard dashboardDto)
         {
             ApiResponse<string> response;
             try

@@ -63,7 +63,8 @@
         public List<DashboardLayoutDto> data { get; set; }
     }
 
-    public class Savedashboardthroughid {
+    public class SaveDashboard
+    {
         public Int64 DashboardId { get; set; }
         public List<MutipleIds> Values { get; set; }
         public string Description { get; set; }
