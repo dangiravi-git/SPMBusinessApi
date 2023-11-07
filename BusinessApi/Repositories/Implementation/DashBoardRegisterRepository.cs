@@ -24,11 +24,12 @@ namespace BusinessApi.Repositories.Implementation
             {
                 _logger = logger;
                 _projectListDao = projectListDao;
-                _logger.LogInformation($"Initiate {nameof(DashBoardRegisterController)}");
+                _logger.LogInformation($"Initiate {nameof(DashBoardRegisterRepository)}");
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex.Message);
+                throw;
             }
 
         }
@@ -647,7 +648,7 @@ namespace BusinessApi.Repositories.Implementation
             }
 
         }
-        public async Task<string> UpdateDashboardData(string DashboardId, List<MutipleIds> Values, string Description)
+        public async Task<string> UpdateDashboardData(Int64 DashboardId, List<MutipleIds> Values, string Description)
         {
             try
             {

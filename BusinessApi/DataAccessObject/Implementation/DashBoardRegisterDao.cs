@@ -357,7 +357,7 @@ namespace BusinessApi.DataAccessObject.Implementation
             }
         }
 
-        public async Task UpdateDescription(string Description, string DashboardId)
+        public async Task UpdateDescription(string Description, Int64 DashboardId)
         {
             try
             {
@@ -372,7 +372,7 @@ namespace BusinessApi.DataAccessObject.Implementation
             }
         }
 
-        public async Task DeleteLayoutDashboard(string DashboardId)
+        public async Task DeleteLayoutDashboard(Int64 DashboardId)
         {
             try
             {
@@ -386,7 +386,7 @@ namespace BusinessApi.DataAccessObject.Implementation
             }
         }
 
-        public async Task InsertIntoDashboard(string DashboardId, string itm, int i)
+        public async Task InsertIntoDashboard(Int64 DashboardId, string itm, int i)
         {
             try
             {

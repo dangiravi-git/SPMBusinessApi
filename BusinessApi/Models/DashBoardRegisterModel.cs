@@ -64,12 +64,12 @@
     }
 
     public class Savedashboardthroughid {
-        public string DashboardId { get; set; }
+        public Int64 DashboardId { get; set; }
         public List<MutipleIds> Values { get; set; }
         public string Description { get; set; }
     }
     public class MutipleIds {
-        public string Id { get; set; }
+        public Int64 Id { get; set; }
     }
 
 }

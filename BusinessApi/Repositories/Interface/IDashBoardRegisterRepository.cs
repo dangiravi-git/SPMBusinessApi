@@ -15,6 +15,6 @@ namespace BusinessApi.Repositories.Interface
         Task<List<DashboardLayoutDto>> GetLayoutsWidgetAssociation(string SelectedDasboardType);
         Task<List<Dashboardeditdata>> EditLayoutsWidgetAssociation(Int64 Id);
         Task<string> SaveDashboardAssociationData(string selectedval, string dashboardId, string dashboardType);
-        Task<string> UpdateDashboardData(string DashboardId, List<MutipleIds> Values, string Description);
+        Task<string> UpdateDashboardData(Int64 DashboardId, List<MutipleIds> Values, string Description);
     }
 }
