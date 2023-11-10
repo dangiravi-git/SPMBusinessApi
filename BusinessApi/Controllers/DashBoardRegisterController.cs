@@ -137,7 +137,7 @@ namespace BusinessApi.Controllers
             }
             return Ok(response);
         }
-        [HttpPost("DeleteRecords")]
+        [HttpDelete("DeleteRecords")]
         public async Task<IActionResult> DeleteRecords(string val)
         {
             ApiResponse<string> response;
@@ -191,7 +191,7 @@ namespace BusinessApi.Controllers
             }
             return Ok(response);
         }
-        [HttpGet("EditLayoutsWidgetAssociation")]
+        [HttpPut("EditLayoutsWidgetAssociation")]
         public async Task<ActionResult<ApiResponse<Dashboardeditdata>>> EditLayoutsWidgetAssociation(Int64 Id)
         {
             ApiResponse<List<Dashboardeditdata>> response;
@@ -245,7 +245,7 @@ namespace BusinessApi.Controllers
             return Ok(response);
         }
 
-        [HttpPost("UpdateDashboardDataByID")]
+        [HttpPut("UpdateDashboardDataByID")]
         public async Task<IActionResult> UpdateDashboardDataByID([FromBody] SaveDashboard dashboardDto)
         {
             ApiResponse<string> response;
