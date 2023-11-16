@@ -1,23 +1,48 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using Authentication.Response;
+
 
 namespace Authentication.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("api/[controller]")]
     public class AuthenticationController : ControllerBase
     {
         [HttpGet("GetAuthenticate")]
-        public async Task<ActionResult<bool>> GetAuthenticate(string key)
+        public ActionResult<bool> GetAuthenticate(string key)
         {
-            if (key == "abc")
+            ApiResponse response;
+            try
             {
-                return Ok(true);
+                if (key == "abc")
+                {
+                    response = new ApiResponse
+                    {
+                        IsSuccess = true,
+                        Message = "Authenticated"
+
+                    };
+                }
+                else
+                {
+                    response = new ApiResponse
+                    {
+                        IsSuccess = false,
+                        Message = "Not Authenticated"
+                    };
+                }
+                return Ok(response);
             }
-            else
+            catch (Exception ex)
             {
-                return Ok(false);
+                response = new ApiResponse
+                {
+                    IsSuccess = false,
+                    Message = "Error in Authenticated"
+                };
+                return Ok(response);
             }
+            
         }
     }
 }
