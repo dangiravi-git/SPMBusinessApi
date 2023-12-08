@@ -1,4 +1,4 @@
-﻿namespace Authentication.Response
+﻿namespace Authentication.Utils.Response
 {
     public enum ErrorType
     {
@@ -13,5 +13,6 @@
         ServerError = 500,
         OperationNotAllowed = 1009,
         InvalidOpertaion
+
     }
 }

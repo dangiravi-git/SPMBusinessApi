@@ -1,9 +1,26 @@
+using Authentication.DataAccessObject.Implementation;
+using Authentication.DataAccessObject.Interface;
+using Authentication.Repositories.Implementation;
+using Authentication.Repositories.Interface;
+using Authentication.Utils;
+using Serilog;
+
 var builder = WebApplication.CreateBuilder(args);
+builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+//var logger = new LoggerConfiguration()
+//    .ReadFrom.Configuration(builder.Configuration)
+//    .Enrich.FromLogContext()
+//    .CreateLogger();
 
 // Add services to the container.
+builder.Logging.ClearProviders();
+//builder.Logging.AddSerilog(logger);
+
+builder.Services.AddScoped<IAuthenticationRepository, AuthenticationRepository>();
+builder.Services.AddScoped<IAuthenticationDao, AuthenticationDao>();
+builder.Services.AddScoped<IDbUtility, DbUtility>();
 
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 

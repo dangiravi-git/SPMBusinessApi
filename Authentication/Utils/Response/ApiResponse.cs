@@ -1,4 +1,4 @@
-﻿namespace Authentication.Response
+﻿namespace Authentication.Utils.Response
 {
     public class ApiResponse
     {
